@@ -10,6 +10,40 @@ import (
 	"github.com/MasatoTokuse/motting/motting/server"
 )
 
+func TestGetConnectArgs(t *testing.T) {
+	cases := []struct {
+		dbServer   string
+		dbPort     string
+		dbSchema   string
+		dbLogin    string
+		dbPassword string
+		want       server.ConnectArgs
+	}{
+		{
+			dbServer:   "2",
+			dbPort:     "3",
+			dbSchema:   "4",
+			dbLogin:    "5",
+			dbPassword: "6",
+			want:       server.ConnectArgs{Address: "2", Port: "3", DBName: "4", User: "5", Password: "6"},
+		},
+	}
+
+	for _, c := range cases {
+		dbServer = c.dbServer
+		dbPort = c.dbPort
+		dbSchema = c.dbSchema
+		dbLogin = c.dbLogin
+		dbPassword = c.dbPassword
+
+		conargs := *getConnectArgs()
+
+		if c.want != conargs {
+			t.Errorf("unexpected response: want:%+v,	get:%+v", c.want, conargs)
+		}
+	}
+}
+
 func TestNewCmdRoot(t *testing.T) {
 	cases := []struct {
 		command string
