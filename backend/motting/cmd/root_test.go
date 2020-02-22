@@ -3,11 +3,40 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 
 	"github.com/MasatoTokuse/motting/motting/server"
 )
+
+func TestNewCmdRoot(t *testing.T) {
+	cases := []struct {
+		command string
+		want    server.ConnectArgs
+	}{
+		{command: "motting", want: server.ConnectArgs{Address: "2", Port: "3", DBName: "4", User: "5", Password: "6"}},
+	}
+
+	for _, c := range cases {
+
+		os.Setenv("MOTT_LOG", "-")
+		os.Setenv("MOTT_PORT", "1")
+		os.Setenv("MOTT_DB_SERVER", "2")
+		os.Setenv("MOTT_DB_PORT", "3")
+		os.Setenv("MOTT_DB_SCHEMA", "4")
+		os.Setenv("MOTT_DB_LOGIN", "5")
+		os.Setenv("MOTT_DB_PASSWORD", "6")
+
+		server := newMockServer()
+		NewCmdRoot(server)
+		conargs := *getConnectArgs()
+
+		if c.want != conargs {
+			t.Errorf("unexpected response: want:%+v,	get:%+v", c.want, conargs)
+		}
+	}
+}
 
 func TestExecute(t *testing.T) {
 	cases := []struct {
