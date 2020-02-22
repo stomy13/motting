@@ -12,9 +12,9 @@ import (
 func TestExecute(t *testing.T) {
 	cases := []struct {
 		command string
-		want    string
+		want    error
 	}{
-		{command: "motting", want: "finished\n"},
+		{command: "motting", want: nil},
 	}
 
 	for _, c := range cases {
@@ -25,11 +25,10 @@ func TestExecute(t *testing.T) {
 		cmdArgs := strings.Split(c.command, " ")
 		fmt.Printf("cmdArgs %+v\n", cmdArgs)
 		cmd.SetArgs(cmdArgs[1:])
-		cmd.Execute()
+		err := cmd.Execute()
 
-		get := buf.String()
-		if c.want != get {
-			t.Errorf("unexpected response: want:%+v, get:%+v", c.want, get)
+		if c.want != err {
+			t.Errorf("unexpected response: want:%+v, get:%+v", c.want, err)
 		}
 	}
 }

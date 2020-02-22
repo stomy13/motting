@@ -19,10 +19,6 @@ var (
 	logpath    string
 )
 
-func init() {
-
-}
-
 func NewCmdRoot(s server.Serve) *cobra.Command {
 
 	cmd := &cobra.Command{
@@ -32,11 +28,9 @@ func NewCmdRoot(s server.Serve) *cobra.Command {
 			// avoid not used error
 			var err error
 			_ = err
+
 			conarg := getConnectArgs()
 			err = s.RunServer(port, conarg)
-			if err == nil {
-				cmd.Println("finished")
-			}
 		},
 	}
 
