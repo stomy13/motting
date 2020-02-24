@@ -31,9 +31,14 @@ func NewHandler(conargs *dbaccess.ConnectArgs) *chi.Mux {
 		w.Write([]byte("Hello API"))
 	})
 
+	r.Get("/test", func(w http.ResponseWriter, r *http.Request) {
+
+		w.Write([]byte("Hello Test"))
+	})
+
 	return r
 }
 
-func (server) RunServer(handler http.Handler, port string) error {
+func (*server) RunServer(handler http.Handler, port string) error {
 	return http.ListenAndServe(port, handler)
 }
