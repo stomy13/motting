@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/MasatoTokuse/motting/motting/server"
+	"github.com/MasatoTokuse/motting/motting/dbaccess"
 )
 
 func TestGetConnectArgs(t *testing.T) {
@@ -17,7 +17,7 @@ func TestGetConnectArgs(t *testing.T) {
 		dbSchema   string
 		dbLogin    string
 		dbPassword string
-		want       server.ConnectArgs
+		want       dbaccess.ConnectArgs
 	}{
 		{
 			dbServer:   "2",
@@ -25,7 +25,7 @@ func TestGetConnectArgs(t *testing.T) {
 			dbSchema:   "4",
 			dbLogin:    "5",
 			dbPassword: "6",
-			want:       server.ConnectArgs{Address: "2", Port: "3", DBName: "4", User: "5", Password: "6"},
+			want:       dbaccess.ConnectArgs{Address: "2", Port: "3", DBName: "4", User: "5", Password: "6"},
 		},
 	}
 
@@ -47,9 +47,9 @@ func TestGetConnectArgs(t *testing.T) {
 func TestNewCmdRoot(t *testing.T) {
 	cases := []struct {
 		command string
-		want    server.ConnectArgs
+		want    dbaccess.ConnectArgs
 	}{
-		{command: "motting", want: server.ConnectArgs{Address: "2", Port: "3", DBName: "4", User: "5", Password: "6"}},
+		{command: "motting", want: dbaccess.ConnectArgs{Address: "2", Port: "3", DBName: "4", User: "5", Password: "6"}},
 	}
 
 	for _, c := range cases {
@@ -102,6 +102,6 @@ func newMockServer() *mockServer {
 	return &mockServer{}
 }
 
-func (*mockServer) RunServer(port string, conargs *server.ConnectArgs) error {
+func (*mockServer) RunServer(port string, conargs *dbaccess.ConnectArgs) error {
 	return nil
 }

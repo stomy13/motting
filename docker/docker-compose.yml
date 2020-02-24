@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:8.0.15
+    ports: 
+      - 33306:3306
+    env_file:
+      - ./mysql/mysql.env
+    volumes:
+      - ./var/mysqldb:/var/lib/mysql

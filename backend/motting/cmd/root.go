@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 
+	"github.com/MasatoTokuse/motting/motting/dbaccess"
 	"github.com/MasatoTokuse/motting/motting/server"
 	"github.com/natefinch/lumberjack"
 	"github.com/spf13/cobra"
@@ -37,7 +38,7 @@ func NewCmdRoot(s server.Serve) *cobra.Command {
 	flags := cmd.PersistentFlags()
 	flags.StringVar(&port, "port", ":3000", "Listen port")
 	flags.StringVar(&dbServer, "db_server", "localhost", "db server")
-	flags.StringVar(&dbPort, "db_port", "3306", "db port")
+	flags.StringVar(&dbPort, "db_port", "33306", "db port")
 	flags.StringVar(&dbSchema, "db_schema", "motting", "db schema")
 	flags.StringVar(&dbLogin, "db_login", "motting", "db login")
 	flags.StringVar(&dbPassword, "db_password", "motting", "db password")
@@ -114,8 +115,8 @@ func Execute() {
 	}
 }
 
-func getConnectArgs() *server.ConnectArgs {
-	var conarg server.ConnectArgs
+func getConnectArgs() *dbaccess.ConnectArgs {
+	var conarg dbaccess.ConnectArgs
 
 	conarg.Address = dbServer
 	conarg.Port = dbPort
