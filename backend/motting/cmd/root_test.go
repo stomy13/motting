@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"net/http"
 	"os"
 	"strings"
 	"testing"
@@ -102,6 +103,6 @@ func newMockServer() *mockServer {
 	return &mockServer{}
 }
 
-func (*mockServer) RunServer(port string, conargs *dbaccess.ConnectArgs) error {
+func (*mockServer) RunServer(handler http.Handler, port string) error {
 	return nil
 }

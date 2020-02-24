@@ -8,7 +8,7 @@ import (
 )
 
 type Serve interface {
-	RunServer(port string, conargs *dbaccess.ConnectArgs) error
+	RunServer(handler http.Handler, port string) error
 }
 type server struct{}
 
@@ -18,12 +18,22 @@ func NewServer() *server {
 	return Server
 }
 
-func (*server) RunServer(port string, conargs *dbaccess.ConnectArgs) error {
+func NewHandler(conargs *dbaccess.ConnectArgs) *chi.Mux {
 	r := chi.NewRouter()
-	r.Get("/api/v1/word", func(w http.ResponseWriter, r *http.Request) {
+
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 
 		w.Write([]byte("Hello Golang"))
 	})
 
-	return http.ListenAndServe(port, r)
+	r.Get("/api/v1/word", func(w http.ResponseWriter, r *http.Request) {
+
+		w.Write([]byte("Hello API"))
+	})
+
+	return r
+}
+
+func (server) RunServer(handler http.Handler, port string) error {
+	return http.ListenAndServe(port, handler)
 }
