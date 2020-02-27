@@ -9,3 +9,4 @@ services:
       - ./mysql/mysql.env
     volumes:
       - ./var/mysqldb:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
