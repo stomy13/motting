@@ -16,11 +16,16 @@ type ConnectArgs struct {
 	Password string
 }
 
-func ConnectGorm(conargs *ConnectArgs) *gorm.DB {
+func (conargs *ConnectArgs) SetDefault() {
 	connectTemplate := "%s:%s@tcp(%s:%s)/%s?parseTime=true"
-	connect := fmt.Sprintf(connectTemplate, conargs.User, conargs.Password, conargs.Address, conargs.Port, conargs.DBName)
-	log.Println(connect)
-	db, err := gorm.Open("mysql", connect)
+	defaultConnectString = fmt.Sprintf(connectTemplate, conargs.User, conargs.Password, conargs.Address, conargs.Port, conargs.DBName)
+}
+
+var defaultConnectString string
+
+func ConnectGorm() *gorm.DB {
+	log.Println(defaultConnectString)
+	db, err := gorm.Open("mysql", defaultConnectString)
 
 	if err != nil {
 		log.Fatalln(err.Error())

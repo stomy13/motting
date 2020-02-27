@@ -31,6 +31,7 @@ func NewCmdRoot(s server.Serve) *cobra.Command {
 			_ = err
 
 			conarg := getConnectArgs()
+			conarg.SetDefault()
 			handler := server.NewHandler(conarg)
 			err = s.RunServer(handler, port)
 		},

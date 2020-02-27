@@ -19,8 +19,8 @@ func Test_ConnectGorm_1(t *testing.T) {
 		DBName:   "motting",
 		User:     "motting",
 		Password: "motting"}
-
-	db := ConnectGorm(conargs)
+	conargs.SetDefault()
+	db := ConnectGorm()
 	defer db.Close()
 	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&Test{})
 }

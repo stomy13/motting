@@ -18,6 +18,8 @@ func TestRunServer(t *testing.T) {
 		User:     "motting",
 		Password: "motting"}
 
+	conargs.SetDefault()
+
 	// テスト用のサーバーを起動
 	handler := NewHandler(conargs)
 	ts := httptest.NewServer(handler)
