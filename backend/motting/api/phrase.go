@@ -10,3 +10,5 @@ type Phrase struct {
 	Text   string `gorm:"size:128"`
 	Author string `gorm:"size:24"`
 }
+
+// TODO:Valid

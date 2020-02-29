@@ -11,19 +11,19 @@ import (
 	"github.com/MasatoTokuse/motting/motting/dbaccess"
 )
 
-// TODO:デフォは全リスト、クエリで検索できるようにする
+// TODO:クエリで検索できるようにする
 func PhraseGET(w http.ResponseWriter, r *http.Request) {
 
 	db := dbaccess.ConnectGorm()
 	defer db.Close()
 	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&Phrase{})
-	phrase := &Phrase{}
-	db.First(phrase)
+	phrases := &[]Phrase{}
+	db.Find(phrases)
 
-	phraseJSON, _ := json.Marshal(phrase)
-	fmt.Println(*phrase)
+	phrasesJSON, _ := json.Marshal(phrases)
+	fmt.Println(*phrases)
 
-	fmt.Fprint(w, string(phraseJSON))
+	fmt.Fprint(w, string(phrasesJSON))
 }
 
 func PhrasePOST(w http.ResponseWriter, r *http.Request) {
