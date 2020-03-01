@@ -12,6 +12,9 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
+const errMsgResCode = "invalid code: %d"
+const urlPhrase = "http://loclahost:3000/phrase/"
+
 func setup() {
 	conargs := &dbaccess.ConnectArgs{
 		Address:  "localhost",
@@ -33,7 +36,7 @@ func TestPhraseGET(t *testing.T) {
 	setup()
 
 	// テスト用のリクエスト作成
-	req := httptest.NewRequest("GET", "http://loclahost:3000/phrase/", nil)
+	req := httptest.NewRequest("GET", urlPhrase, nil)
 	// テスト用のレスポンス作成
 	res := httptest.NewRecorder()
 
@@ -42,7 +45,7 @@ func TestPhraseGET(t *testing.T) {
 
 	// レスポンスのステータスコードのテスト
 	if res.Code != http.StatusOK {
-		t.Errorf("invalid code: %d", res.Code)
+		t.Errorf(errMsgResCode, res.Code)
 	}
 
 	// レスポンスのボディのテスト
@@ -67,7 +70,7 @@ func TestPhrasePOST(t *testing.T) {
 	values.Set("userid", "whitebox")
 	values.Add("text", "諸行無常")
 	values.Add("author", "釈迦")
-	req := httptest.NewRequest("POST", "http://loclahost:3000/phrase/", strings.NewReader(values.Encode()))
+	req := httptest.NewRequest("POST", urlPhrase, strings.NewReader(values.Encode()))
 	// Content-Type 設定
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
@@ -79,12 +82,12 @@ func TestPhrasePOST(t *testing.T) {
 
 	// レスポンスのステータスコードのテスト
 	if res.Code != http.StatusOK {
-		t.Errorf("invalid code: %d", res.Code)
+		t.Errorf(errMsgResCode, res.Code)
 	}
 
 	// レスポンスのボディのテスト
 	if res.Body.String() != "ok" {
-		t.Errorf("invalid response: %#v", res)
+		t.Errorf("invalid response: %#v", res.Body.String())
 	}
 
 	// 実行後テーブル件数取得
@@ -97,4 +100,53 @@ func TestPhrasePOST(t *testing.T) {
 	}
 
 	t.Logf("%#v", res)
+}
+
+func TestPhraseDELETE(t *testing.T) {
+
+	const id = "1"
+
+	setup()
+	db := dbaccess.ConnectGorm()
+	defer db.Close()
+
+	// 実行前テーブル件数取得
+	before := getCount(db)
+
+	// テスト用のリクエスト作成
+	values := url.Values{}
+	values.Set("userid", "whitebox")
+	values.Add("id", id)
+	req := httptest.NewRequest("DELETE", urlPhrase, strings.NewReader(values.Encode()))
+	// テスト用のレスポンス作成
+	res := httptest.NewRecorder()
+
+	// ハンドラーの実行
+	PhraseDELETE(res, req)
+
+	// レスポンスのステータスコードのテスト
+	if res.Code != http.StatusOK {
+		t.Errorf(errMsgResCode, res.Code)
+	}
+
+	// レスポンスのボディのテスト
+	if res.Body.String() != "ok" {
+		t.Errorf("invalid response: %#v", res.Body.String())
+	}
+
+	// 実行前テーブル件数取得
+	after := getCount(db)
+	diff := after - before
+
+	// 削除されていることの確認
+	if diff != -1 {
+		t.Errorf("expected %d, got %d", -1, diff)
+	}
+
+	// 元に戻す
+	phrase := &Phrase{}
+	db.Unscoped().Model(&Phrase{}).Where("id = ?", id).First(phrase)
+	phrase.DeletedAt = nil
+	db.Unscoped().Save(phrase)
+
 }
