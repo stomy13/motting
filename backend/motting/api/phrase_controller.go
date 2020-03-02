@@ -79,3 +79,37 @@ func PhraseDELETE(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprint(w, "ok")
 }
+
+func PhrasePATCH(w http.ResponseWriter, r *http.Request) {
+
+	// リクエストから値を受けとる
+	bytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	values, err := url.ParseQuery(string(bytes))
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// TODO:引数チェック
+
+	// Update
+	db := dbaccess.ConnectGorm()
+	defer db.Close()
+	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&Phrase{})
+
+	phrase := &Phrase{}
+	db.Where("id = ?", values.Get("id")).Find(phrase)
+	if phrase.ID == 0 {
+		fmt.Fprint(w, "ng")
+		return
+	}
+
+	phrase.UserID = values.Get("userid")
+	phrase.Text = values.Get("text")
+	phrase.Author = values.Get("author")
+	db.Save(phrase)
+
+	fmt.Fprint(w, "ok")
+}

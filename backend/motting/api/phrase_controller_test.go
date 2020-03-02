@@ -150,3 +150,52 @@ func TestPhraseDELETE(t *testing.T) {
 	db.Unscoped().Save(phrase)
 
 }
+
+func TestPhrasePATCH(t *testing.T) {
+
+	const id = "2"
+	const userid = "whitebox"
+	const text = "諸行無常2"
+	const author = "釈迦2"
+
+	setup()
+	db := dbaccess.ConnectGorm()
+	defer db.Close()
+
+	// テスト用のリクエスト作成
+	values := url.Values{}
+	values.Set("id", id)
+	values.Add("userid", userid)
+	values.Add("text", text)
+	values.Add("author", author)
+	req := httptest.NewRequest("PATCH", urlPhrase, strings.NewReader(values.Encode()))
+	// テスト用のレスポンス作成
+	res := httptest.NewRecorder()
+
+	// ハンドラーの実行
+	PhrasePATCH(res, req)
+
+	// レスポンスのステータスコードのテスト
+	if res.Code != http.StatusOK {
+		t.Errorf(errMsgResCode, res.Code)
+	}
+
+	// レスポンスのボディのテスト
+	if res.Body.String() != "ok" {
+		t.Errorf("invalid response: %#v", res.Body.String())
+	}
+
+	// 更新されていることの確認
+	phrase := &Phrase{}
+	db.Where("id = ?", id).Find(phrase)
+	if phrase.UserID != userid {
+		t.Errorf("expected %s, got %s", userid, phrase.UserID)
+	}
+	if phrase.Text != text {
+		t.Errorf("expected %s, got %s", text, phrase.Text)
+	}
+	if phrase.Author != author {
+		t.Errorf("expected %s, got %s", author, phrase.Author)
+	}
+
+}
