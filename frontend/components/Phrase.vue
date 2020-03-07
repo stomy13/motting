@@ -12,6 +12,16 @@
             </em>
           </div>
         </v-card-text>
+        <v-btn
+          x-small
+          absolute
+          right
+          bottom
+          dark
+          @click="removePhrase(phrase.id)"
+        >
+          <v-icon small dark>mdi-delete</v-icon>
+        </v-btn>
       </v-card>
     </v-col>
     <v-btn
@@ -63,6 +73,9 @@ export default {
       this.dialog = false
       this.text = ''
       this.author = ''
+    },
+    removePhrase(id) {
+      this.$store.commit('phrases/remove', id)
     }
   }
 }
