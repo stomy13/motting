@@ -1,16 +1,24 @@
 <template>
   <v-form ref="form">
-    <v-text-field
-      v-model="push_at"
-      :counter="10"
-      label="Push Time"
-      required
-    ></v-text-field>
-
+    <v-dialog v-model="dialog" width="290px">
+      <template v-slot:activator="{ on }">
+        <v-text-field
+          v-model="push_at"
+          label="Push Time"
+          required
+          readonly
+          v-on="on"
+        ></v-text-field>
+      </template>
+      <v-time-picker
+        v-model="push_at"
+        class="mt-2"
+        format="24hr"
+      ></v-time-picker>
+    </v-dialog>
     <v-btn color="success" class="mr-4" @click="modify">
       Submit
     </v-btn>
-
     <v-btn color="error" class="mr-4" @click="reset">
       Reset
     </v-btn>
@@ -18,20 +26,13 @@
 </template>
 
 <script>
-// import { mapState } from 'vuex'
-
 export default {
   data() {
     return {
-      // Inputに入力するときは変更せずに、ボタンを押したときだけ変更にしたい！そしてStateは自動的に反映されてほしい。
-      push_at: this.$store.state.push_time.push_at
+      push_at: this.$store.state.push_time.push_at,
+      dialog: false
     }
   },
-  //   computed: {
-  //     ...mapState({
-  //       push_at: (state) => state.push_time.push_at
-  //     })
-  //   },
   methods: {
     modify() {
       this.$store.commit('push_time/modify', this.push_at)
