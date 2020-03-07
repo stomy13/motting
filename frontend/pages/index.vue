@@ -1,11 +1,13 @@
 <template>
   <div class="text-center">
-    <v-row>
+    <v-row align="center" justify="center">
       <logo />
       <vuetify-logo />
       <push-time />
     </v-row>
-
+    <v-btn class="mx-2" fixed fab right dark color="indigo">
+      <v-icon dark>mdi-plus</v-icon>
+    </v-btn>
     <phrase />
   </div>
 </template>
