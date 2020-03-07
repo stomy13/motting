@@ -12,28 +12,57 @@
             </em>
           </div>
         </v-card-text>
-        <!-- <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" nuxt to="/inspire">
-          Continue
-          </v-btn>
-      </v-card-actions> -->
       </v-card>
     </v-col>
+    <v-btn
+      class="mx-2"
+      fixed
+      fab
+      right
+      dark
+      color="indigo"
+      @click="dialog = !dialog"
+    >
+      <v-icon dark>mdi-plus</v-icon>
+    </v-btn>
+    <v-dialog v-model="dialog" max-width="500px">
+      <v-card>
+        <v-card-text>
+          <v-text-field v-model="text" label="Text"></v-text-field>
+          <v-text-field v-model="author" label="Author"></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text color="primary" @click="addPhrase">Add</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-row>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      dialog: false,
+      text: '',
+      author: ''
+    }
+  },
   computed: {
     phrases() {
       return this.$store.state.phrases.list
     }
   },
   methods: {
-    addPhrases(e) {
-      this.$store.commit('phrases/add', e.target.value)
-      e.target.value = ''
+    addPhrase() {
+      this.$store.commit('phrases/add', {
+        text: this.text,
+        author: this.author
+      })
+      this.dialog = false
+      this.text = ''
+      this.author = ''
     }
   }
 }

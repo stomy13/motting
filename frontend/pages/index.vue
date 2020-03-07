@@ -5,9 +5,6 @@
       <vuetify-logo />
       <push-time />
     </v-row>
-    <v-btn class="mx-2" fixed fab right dark color="indigo">
-      <v-icon dark>mdi-plus</v-icon>
-    </v-btn>
     <phrase />
   </div>
 </template>
