@@ -3,6 +3,7 @@ package server
 import (
 	"net/http"
 
+	"github.com/MasatoTokuse/motting/motting/api"
 	"github.com/MasatoTokuse/motting/motting/dbaccess"
 	"github.com/go-chi/chi"
 )
@@ -26,15 +27,9 @@ func NewHandler(conargs *dbaccess.ConnectArgs) *chi.Mux {
 		w.Write([]byte("Hello Golang"))
 	})
 
-	r.Get("/api/v1/word", func(w http.ResponseWriter, r *http.Request) {
-
-		w.Write([]byte("Hello API"))
-	})
-
-	r.Get("/test", func(w http.ResponseWriter, r *http.Request) {
-
-		w.Write([]byte("Hello Test"))
-	})
+	const urlPushtime = "/api/v1/pushtime"
+	r.Get(urlPushtime, api.PushTimeGET)
+	r.Patch(urlPushtime, api.PushTimePATCH)
 
 	return r
 }
