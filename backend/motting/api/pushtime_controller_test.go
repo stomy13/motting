@@ -1,14 +1,22 @@
 package api
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/MasatoTokuse/motting/motting/model"
 )
 
 const urlPushTime = "http://loclahost:3000/pushtime/"
 
 func TestPushTimeGET(t *testing.T) {
+
+	expected := model.PushTime{
+		UserID: "whitebox",
+		PushAt: "10:00",
+	}
 
 	setup()
 
@@ -25,10 +33,15 @@ func TestPushTimeGET(t *testing.T) {
 		t.Errorf(errMsgResCode, res.Code)
 	}
 
-	// レスポンスのボディのテスト
-	// if res.Body.String() != "{\"ID\":1,\"CreatedAt\":\"2020-02-26T17:08:09Z\",\"UpdatedAt\":\"2020-02-26T17:08:09Z\",\"DeletedAt\":null,\"UserID\":\"whitebox\",\"Text\":\"諸行無常\",\"Author\":\"釈迦\"}" {
-	// 	t.Errorf("invalid response: %#v", res.Body.String())
-	// }
+	// レスポンスのテスト
+	var actual model.PushTime
+	json.Unmarshal(res.Body.Bytes(), &actual)
+	if actual.UserID != expected.UserID {
+		t.Errorf(errMsgNotMatchS, expected.UserID, actual.UserID)
+	}
+	if actual.PushAt != expected.PushAt {
+		t.Errorf(errMsgNotMatchS, expected.PushAt, actual.PushAt)
+	}
 
 	t.Logf("%#v", res)
 }
