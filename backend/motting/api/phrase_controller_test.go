@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/MasatoTokuse/motting/motting/dbaccess"
+	"github.com/MasatoTokuse/motting/motting/model"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
@@ -27,7 +28,7 @@ func setup() {
 
 func getCount(db *gorm.DB) int {
 	var count int
-	db.Model(&Phrase{}).Count(&count)
+	db.Model(&model.Phrase{}).Count(&count)
 	return count
 }
 
@@ -144,8 +145,8 @@ func TestPhraseDELETE(t *testing.T) {
 	}
 
 	// 元に戻す
-	phrase := &Phrase{}
-	db.Unscoped().Model(&Phrase{}).Where("id = ?", id).First(phrase)
+	phrase := &model.Phrase{}
+	db.Unscoped().Model(&model.Phrase{}).Where("id = ?", id).First(phrase)
 	phrase.DeletedAt = nil
 	db.Unscoped().Save(phrase)
 
@@ -186,7 +187,7 @@ func TestPhrasePATCH(t *testing.T) {
 	}
 
 	// 更新されていることの確認
-	phrase := &Phrase{}
+	phrase := &model.Phrase{}
 	db.Where("id = ?", id).Find(phrase)
 	if phrase.UserID != userid {
 		t.Errorf("expected %s, got %s", userid, phrase.UserID)

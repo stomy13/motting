@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	"github.com/MasatoTokuse/motting/motting/dbaccess"
+	"github.com/MasatoTokuse/motting/motting/model"
 )
 
 // TODO:クエリで検索できるようにする
@@ -17,8 +18,8 @@ func PhraseGET(w http.ResponseWriter, r *http.Request) {
 
 	db := dbaccess.ConnectGorm()
 	defer db.Close()
-	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&Phrase{})
-	phrases := &[]Phrase{}
+	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.Phrase{})
+	phrases := &[]model.Phrase{}
 	db.Find(phrases)
 
 	phrasesJSON, _ := json.Marshal(phrases)
@@ -38,7 +39,7 @@ func PhrasePOST(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	phrase := &Phrase{
+	phrase := &model.Phrase{
 		UserID: values.Get("userid"),
 		Text:   values.Get("text"),
 		Author: values.Get("author"),
@@ -47,7 +48,7 @@ func PhrasePOST(w http.ResponseWriter, r *http.Request) {
 	// Insert
 	db := dbaccess.ConnectGorm()
 	defer db.Close()
-	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&Phrase{})
+	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.Phrase{})
 	db.Create(phrase)
 
 	fmt.Fprint(w, "ok")
@@ -68,13 +69,13 @@ func PhraseDELETE(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	phrase := &Phrase{}
+	phrase := &model.Phrase{}
 	phrase.ID = uint(id)
 
 	// Delete
 	db := dbaccess.ConnectGorm()
 	defer db.Close()
-	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&Phrase{})
+	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.Phrase{})
 	db.Delete(phrase)
 
 	fmt.Fprint(w, "ok")
@@ -97,9 +98,9 @@ func PhrasePATCH(w http.ResponseWriter, r *http.Request) {
 	// Update
 	db := dbaccess.ConnectGorm()
 	defer db.Close()
-	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&Phrase{})
+	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.Phrase{})
 
-	phrase := &Phrase{}
+	phrase := &model.Phrase{}
 	db.Where("id = ?", values.Get("id")).Find(phrase)
 	if phrase.ID == 0 {
 		fmt.Fprint(w, "ng")
