@@ -15,7 +15,7 @@ type Test struct {
 func Test_ConnectGorm_1(t *testing.T) {
 	conargs := &ConnectArgs{
 		Address:  "localhost",
-		Port:     "33306",
+		Port:     "33333",
 		DBName:   "motting",
 		User:     "motting",
 		Password: "motting"}

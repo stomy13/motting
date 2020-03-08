@@ -10,3 +10,12 @@ services:
     volumes:
       - ./var/mysqldb:/var/lib/mysql
       - ./mysql/my.cnf:/etc/mysql/my.cnf
+  db_test:
+    image: mysql:8.0.15
+    ports: 
+      - 33333:3306
+    env_file:
+      - ./mysql/mysql.env
+    volumes:
+      - ./var/mysqldb_test:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/my.cnf

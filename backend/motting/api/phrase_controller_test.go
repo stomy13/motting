@@ -19,7 +19,7 @@ const urlPhrase = "http://loclahost:3000/phrase/"
 func setup() {
 	conargs := &dbaccess.ConnectArgs{
 		Address:  "localhost",
-		Port:     "33306",
+		Port:     "33333",
 		DBName:   "motting",
 		User:     "motting",
 		Password: "motting"}
