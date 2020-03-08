@@ -29,9 +29,13 @@
 export default {
   data() {
     return {
-      push_at: this.$store.state.push_time.push_at,
+      push_at: '',
       dialog: false
     }
+  },
+  async mounted() {
+    await this.$store.dispatch('push_time/fetch')
+    this.push_at = this.$store.state.push_time.push_at
   },
   methods: {
     modify() {

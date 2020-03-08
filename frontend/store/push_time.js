@@ -1,5 +1,7 @@
+import axios from 'axios'
+
 export const state = () => ({
-  push_at: '10:10'
+  push_at: ''
 })
 
 export const mutations = {
@@ -8,5 +10,13 @@ export const mutations = {
   },
   reset(state) {
     state.push_at = ''
+  }
+}
+
+export const actions = {
+  async fetch({ commit, state }) {
+    const res = await axios.get('http://localhost:3001/api/v1/pushtime')
+    const pt = res.data.PushAt
+    commit('modify', pt)
   }
 }
