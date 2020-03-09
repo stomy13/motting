@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     modify() {
-      this.$store.commit('push_time/modify', this.push_at)
+      this.$store.dispatch('push_time/patch', this.push_at)
     },
     reset() {
       this.$store.commit('push_time/reset')
