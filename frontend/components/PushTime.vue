@@ -16,12 +16,18 @@
         format="24hr"
       ></v-time-picker>
     </v-dialog>
-    <v-btn color="success" class="mr-4" @click="modify">
+    <v-btn color="#007E33" class="mr-4" @click="modify">
       Submit
     </v-btn>
-    <v-btn color="error" class="mr-4" @click="reset">
+    <v-btn color="#B71C1C" class="mr-4" @click="reset">
       Reset
     </v-btn>
+    <v-snackbar v-model="snackbar" color="#007E33" top>
+      Pushtime has been updated!!!
+      <v-btn color="white" text @click="snackbar = false">
+        ×
+      </v-btn>
+    </v-snackbar>
   </v-form>
 </template>
 
@@ -30,7 +36,8 @@ export default {
   data() {
     return {
       push_at: '',
-      dialog: false
+      dialog: false,
+      snackbar: false
     }
   },
   async mounted() {
@@ -40,6 +47,7 @@ export default {
   methods: {
     modify() {
       this.$store.dispatch('push_time/patch', this.push_at)
+      this.snackbar = true
     },
     reset() {
       this.$store.commit('push_time/reset')
