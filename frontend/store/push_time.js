@@ -15,7 +15,7 @@ export const mutations = {
 
 export const actions = {
   async fetch({ commit }) {
-    const res = await axios.get('http://localhost:3001/api/v1/pushtime')
+    const res = await axios.get(this.$config.api_base_url + 'pushtime')
     const pt = res.data.PushAt
     commit('modify', pt)
   },
@@ -24,7 +24,7 @@ export const actions = {
     params.append('userid', 'whitebox')
     params.append('pushAt', pushAt)
     const res = await axios.patch(
-      'http://localhost:3001/api/v1/pushtime',
+      this.$config.api_base_url + 'pushtime',
       params
     )
     const pt = res.data.PushAt
