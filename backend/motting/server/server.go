@@ -42,6 +42,12 @@ func NewHandler(conargs *dbaccess.ConnectArgs) *chi.Mux {
 	r.Get(urlPushtime, api.PushTimeGET)
 	r.Patch(urlPushtime, api.PushTimePATCH)
 
+	const urlPhrase = "/api/v1/phrase"
+	r.Get(urlPhrase, api.PhraseGET)
+	r.Post(urlPhrase, api.PhrasePOST)
+	r.Delete(urlPhrase, api.PhraseDELETE)
+	r.Patch(urlPhrase, api.PhrasePATCH)
+
 	return r
 }
 
