@@ -26,7 +26,6 @@ export const mutations = {
 export const actions = {
   async fetch({ commit }) {
     const res = await axios.get(this.$config.api_base_url + 'phrase')
-    console.log(res.data)
     const phrases = res.data
     commit('set', phrases)
   }
