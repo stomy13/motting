@@ -68,8 +68,9 @@ export default {
     this.$store.dispatch('phrases/fetch')
   },
   methods: {
-    addPhrase() {
-      this.$store.commit('phrases/add', {
+    async addPhrase() {
+      await this.$store.dispatch({
+        type: 'phrases/post',
         text: this.text,
         author: this.author
       })
