@@ -79,7 +79,10 @@ export default {
       this.author = ''
     },
     removePhrase(id) {
-      this.$store.commit('phrases/remove', id)
+      this.$store.dispatch({
+        type: 'phrases/delete',
+        id
+      })
     }
   }
 }

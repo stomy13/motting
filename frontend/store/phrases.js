@@ -7,10 +7,6 @@ export const state = () => ({
 export const mutations = {
   set(state, phrases) {
     state.list = phrases
-  },
-  remove(state, id) {
-    const result = state.list.find((phrase) => phrase.ID === id)
-    state.list.splice(state.list.indexOf(result), 1)
   }
 }
 
@@ -26,6 +22,16 @@ export const actions = {
     params.append('text', text)
     params.append('author', author)
     const res = await axios.post(this.$config.api_base_url + 'phrase', params)
+    const phrases = res.data
+    commit('set', phrases)
+  },
+  async delete({ commit }, { id }) {
+    console.log(id)
+    const params = new URLSearchParams()
+    params.append('id', id)
+    const res = await axios.delete(this.$config.api_base_url + 'phrase', {
+      data: params
+    })
     const phrases = res.data
     commit('set', phrases)
   }
