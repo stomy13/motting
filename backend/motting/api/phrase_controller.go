@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -10,7 +9,9 @@ import (
 	"strconv"
 
 	"github.com/MasatoTokuse/motting/motting/dbaccess"
+	jsonwrapper "github.com/MasatoTokuse/motting/motting/json"
 	"github.com/MasatoTokuse/motting/motting/model"
+	"github.com/jinzhu/gorm"
 )
 
 // TODO:クエリで検索できるようにする
@@ -19,13 +20,8 @@ func PhraseGET(w http.ResponseWriter, r *http.Request) {
 	db := dbaccess.ConnectGorm()
 	defer db.Close()
 	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.Phrase{})
-	phrases := &[]model.Phrase{}
-	db.Find(phrases)
 
-	phrasesJSON, _ := json.Marshal(phrases)
-	fmt.Println(*phrases)
-
-	fmt.Fprint(w, string(phrasesJSON))
+	responsePhrases(w, db)
 }
 
 func PhrasePOST(w http.ResponseWriter, r *http.Request) {
@@ -51,7 +47,7 @@ func PhrasePOST(w http.ResponseWriter, r *http.Request) {
 	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.Phrase{})
 	db.Create(phrase)
 
-	fmt.Fprint(w, "ok")
+	responsePhrases(w, db)
 }
 
 func PhraseDELETE(w http.ResponseWriter, r *http.Request) {
@@ -78,7 +74,7 @@ func PhraseDELETE(w http.ResponseWriter, r *http.Request) {
 	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.Phrase{})
 	db.Delete(phrase)
 
-	fmt.Fprint(w, "ok")
+	responsePhrases(w, db)
 }
 
 func PhrasePATCH(w http.ResponseWriter, r *http.Request) {
@@ -112,5 +108,14 @@ func PhrasePATCH(w http.ResponseWriter, r *http.Request) {
 	phrase.Author = values.Get("author")
 	db.Save(phrase)
 
-	fmt.Fprint(w, "ok")
+	responsePhrases(w, db)
+}
+
+func responsePhrases(w http.ResponseWriter, db *gorm.DB) {
+	phrases := dbaccess.PhrasesAll(db)
+	phrasesJSON, err := jsonwrapper.MarshalString(phrases)
+	if err != nil {
+		fmt.Fprint(w, err)
+	}
+	fmt.Fprint(w, phrasesJSON)
 }
