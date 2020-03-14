@@ -21,7 +21,7 @@ func TestRunServer(t *testing.T) {
 	conargs.SetDefault()
 
 	// テスト用のサーバーを起動
-	handler := NewHandler(conargs)
+	handler := NewHandler()
 	ts := httptest.NewServer(handler)
 	defer ts.Close()
 

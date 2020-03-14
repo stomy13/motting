@@ -52,12 +52,11 @@ func TestPushTimeGET(t *testing.T) {
 func TestPushTimePATCH(t *testing.T) {
 
 	expected := model.PushTime{
-		UserID: "whitebox",
+		UserID: "blackbox",
 		PushAt: "18:00",
 	}
 
-	setup()
-	db := dbaccess.ConnectGorm()
+	db := dbaccess.ConnectGormInTest()
 	defer db.Close()
 
 	// テスト用のリクエスト作成

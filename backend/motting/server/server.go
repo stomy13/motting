@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/MasatoTokuse/motting/motting/api"
-	"github.com/MasatoTokuse/motting/motting/dbaccess"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 )
@@ -20,7 +19,7 @@ func NewServer() *server {
 	return Server
 }
 
-func NewHandler(conargs *dbaccess.ConnectArgs) *chi.Mux {
+func NewHandler() *chi.Mux {
 	r := chi.NewRouter()
 
 	cors := cors.New(cors.Options{
