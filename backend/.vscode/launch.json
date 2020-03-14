@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [       
         {
-            "name": "API",
+            "name": "Motting API",
             "type": "go",
             "request": "launch",
             "mode": "auto",
@@ -13,6 +13,16 @@
             // "env": {
             // },
             "args": []
+        },
+        {
+            "name": "Webpush API",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/webpush",
+            // "env": {
+            // },
+            "args": ["auth"]
         }
     ]
 }
