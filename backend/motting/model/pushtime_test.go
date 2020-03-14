@@ -2,8 +2,6 @@ package model
 
 import (
 	"testing"
-
-	"github.com/MasatoTokuse/motting/motting/dbaccess"
 )
 
 func TestPushTime(t *testing.T) {
@@ -13,10 +11,4 @@ func TestPushTime(t *testing.T) {
 	}
 	t.Log(pt.UserID)
 	t.Log(pt.PushAt)
-}
-
-func TestPushTimeCreateTable(t *testing.T) {
-	db := dbaccess.ConnectGormInTest()
-	defer db.Close()
-	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&PushTime{})
 }

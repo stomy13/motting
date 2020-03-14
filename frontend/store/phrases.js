@@ -26,7 +26,6 @@ export const actions = {
     commit('set', phrases)
   },
   async delete({ commit }, { id }) {
-    console.log(id)
     const params = new URLSearchParams()
     params.append('id', id)
     const res = await axios.delete(this.$config.api_base_url + 'phrase', {
