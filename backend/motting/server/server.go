@@ -3,8 +3,10 @@ package server
 import (
 	"net/http"
 
+	"github.com/MasatoTokuse/motting/motting/api"
 	"github.com/MasatoTokuse/motting/motting/dbaccess"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/cors"
 )
 
 type Serve interface {
@@ -21,20 +23,30 @@ func NewServer() *server {
 func NewHandler(conargs *dbaccess.ConnectArgs) *chi.Mux {
 	r := chi.NewRouter()
 
+	cors := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	})
+	r.Use(cors.Handler)
+
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 
 		w.Write([]byte("Hello Golang"))
 	})
 
-	r.Get("/api/v1/word", func(w http.ResponseWriter, r *http.Request) {
+	const urlPushtime = "/api/v1/pushtime"
+	r.Get(urlPushtime, api.PushTimeGET)
+	r.Patch(urlPushtime, api.PushTimePATCH)
 
-		w.Write([]byte("Hello API"))
-	})
-
-	r.Get("/test", func(w http.ResponseWriter, r *http.Request) {
-
-		w.Write([]byte("Hello Test"))
-	})
+	const urlPhrase = "/api/v1/phrase"
+	r.Get(urlPhrase, api.PhraseGET)
+	r.Post(urlPhrase, api.PhrasePOST)
+	r.Delete(urlPhrase, api.PhraseDELETE)
+	r.Patch(urlPhrase, api.PhrasePATCH)
 
 	return r
 }

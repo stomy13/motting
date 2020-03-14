@@ -4,11 +4,11 @@
       <v-card>
         <v-card-text>
           <p>
-            {{ phrase.text }}
+            {{ phrase.Text }}
           </p>
           <div class="text-xs-right">
             <em>
-              <small>&mdash; {{ phrase.author }}</small>
+              <small>&mdash; {{ phrase.Author }}</small>
             </em>
           </div>
         </v-card-text>
@@ -18,7 +18,7 @@
           right
           bottom
           dark
-          @click="removePhrase(phrase.id)"
+          @click="removePhrase(phrase.ID)"
         >
           <v-icon small dark>mdi-delete</v-icon>
         </v-btn>
@@ -64,9 +64,13 @@ export default {
       return this.$store.state.phrases.list
     }
   },
+  mounted() {
+    this.$store.dispatch('phrases/fetch')
+  },
   methods: {
-    addPhrase() {
-      this.$store.commit('phrases/add', {
+    async addPhrase() {
+      await this.$store.dispatch({
+        type: 'phrases/post',
         text: this.text,
         author: this.author
       })
@@ -75,7 +79,10 @@ export default {
       this.author = ''
     },
     removePhrase(id) {
-      this.$store.commit('phrases/remove', id)
+      this.$store.dispatch({
+        type: 'phrases/delete',
+        id
+      })
     }
   }
 }

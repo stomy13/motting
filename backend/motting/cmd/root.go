@@ -38,7 +38,7 @@ func NewCmdRoot(s server.Serve) *cobra.Command {
 	}
 
 	flags := cmd.PersistentFlags()
-	flags.StringVar(&port, "port", ":3000", "Listen port")
+	flags.StringVar(&port, "port", ":3001", "Listen port")
 	flags.StringVar(&dbServer, "db_server", "localhost", "db server")
 	flags.StringVar(&dbPort, "db_port", "33306", "db port")
 	flags.StringVar(&dbSchema, "db_schema", "motting", "db schema")
