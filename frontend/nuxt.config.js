@@ -30,7 +30,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/config.js'],
+  plugins: ['~/plugins/config.js', '~/plugins/webpush.js'],
   /*
    ** Nuxt.js dev-modules
    */
