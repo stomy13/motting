@@ -5,7 +5,8 @@ self.addEventListener('push', (evt) => {
   const title = data.title
   const options = {
     body: data.body,
-    icon: 'doggy.jpg'
+    icon: 'doggy.jpg',
+    requireInteraction: true
   }
   evt.waitUntil(self.registration.showNotification(title, options))
 })

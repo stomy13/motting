@@ -27,7 +27,7 @@ func (msg *message) Push() error {
 	defer db.Close()
 
 	var s model.Subscription
-	db.Where("user_id = ?", 50).Last(&s)
+	db.Where("user_id = ?", "whitebox").Last(&s)
 
 	// Decode subscription
 	sub := &webpush.Subscription{Endpoint: s.Endpoint, Keys: webpush.Keys{P256dh: s.P256dh, Auth: s.Auth}}

@@ -1,9 +1,15 @@
 package cmd
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"log"
+	"math/rand"
+	"net/http"
 	"os"
+	"time"
 
+	"github.com/MasatoTokuse/motting/motting/model"
 	"github.com/MasatoTokuse/motting/webpush/dbaccess"
 	"github.com/MasatoTokuse/motting/webpush/message"
 	"github.com/MasatoTokuse/motting/webpush/server"
@@ -32,7 +38,30 @@ func NewCmdRoot() *cobra.Command {
 			_ = err
 			conargs := getConnectArgs()
 			conargs.SetDefault()
-			message := message.NewMessage("title from golang", "bodyyyy from golang")
+
+			// http GET
+			resp, err := http.Get("http://localhost:3001/api/v1/phrase")
+			if err != nil {
+				return
+			}
+			defer resp.Body.Close()
+
+			bytes, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return
+			}
+
+			var phrases []model.Phrase
+			err = json.Unmarshal(bytes, &phrases)
+			if err != nil {
+				return
+			}
+
+			rand.Seed(time.Now().UnixNano())
+			randIndex := rand.Intn(len(phrases))
+			phrase := phrases[randIndex]
+
+			message := message.NewMessage(phrase.Author, phrase.Text)
 			err = message.Push()
 		},
 	}
