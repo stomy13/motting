@@ -1,6 +1,8 @@
 package api
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -13,19 +15,10 @@ import (
 	"github.com/MasatoTokuse/motting/motting/test"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/stretchr/testify/assert"
 )
 
 const urlPhrase = "http://loclahost:3000/phrase/"
-
-func setup() {
-	conargs := &dbaccess.ConnectArgs{
-		Address:  "localhost",
-		Port:     "33333",
-		DBName:   "motting",
-		User:     "motting",
-		Password: "motting"}
-	conargs.SetDefault()
-}
 
 func getCount(db *gorm.DB) int {
 	var count int
@@ -70,10 +63,31 @@ func TestPhraseGET(t *testing.T) {
 	// テストデータ準備
 	db := dbaccess.ConnectGormInTest()
 	defer db.Close()
-	prepareTestDataPhrase(db)
+	testdata := prepareTestDataPhrase(db)
 
+	values := url.Values{}
+	values.Set("userid", "whitebox")
+	testPhraseGET(t, &values, (*testdata)[0:5])
+
+	values = url.Values{}
+	values.Set("userid", "whitebox")
+	values.Add("text", "3")
+	testPhraseGET(t, &values, (*testdata)[2:3])
+
+	values = url.Values{}
+	values.Set("userid", "whitebox")
+	values.Add("author", "4")
+	testPhraseGET(t, &values, (*testdata)[3:4])
+
+	values = url.Values{}
+	values.Set("userid", "box")
+	testPhraseGET(t, &values, []model.Phrase{})
+
+}
+
+func testPhraseGET(t *testing.T, values *url.Values, expected []model.Phrase) {
 	// テスト用のリクエストとレスポンスを作成
-	req := httptest.NewRequest("GET", urlPhrase, nil)
+	req := httptest.NewRequest("GET", urlPhrase, strings.NewReader(values.Encode()))
 	res := httptest.NewRecorder()
 
 	// ハンドラーの実行
@@ -85,8 +99,22 @@ func TestPhraseGET(t *testing.T) {
 	}
 
 	// レスポンスのボディのテスト
-	if res.Body.String() == "" {
-		t.Errorf(test.ErrMsgInvalidResBody, res.Body.String())
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		t.Error(err)
+	}
+	var actual []model.Phrase
+	json.Unmarshal(body, &actual)
+
+	// 件数が一致すること
+	assert.Equal(t, len(expected), len(actual), test.ErrMsgNotMatchD, len(expected), len(actual))
+
+	// 各フィールドが一致すること
+	for i, act := range actual {
+		assert.Equal(t, expected[i].ID, act.ID, test.ErrMsgNotMatchD, expected[i].ID, act.ID)
+		assert.Equal(t, expected[i].UserID, act.UserID, test.ErrMsgNotMatchD, expected[i].UserID, act.UserID)
+		assert.Equal(t, expected[i].Text, act.Text, test.ErrMsgNotMatchD, expected[i].Text, act.Text)
+		assert.Equal(t, expected[i].Author, act.Author, test.ErrMsgNotMatchD, expected[i].Author, act.Author)
 	}
 
 }

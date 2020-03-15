@@ -15,6 +15,15 @@ import (
 
 const urlPushTime = "http://loclahost:3000/pushtime/"
 
+func setup() {
+	conargs := &dbaccess.ConnectArgs{
+		Address:  "localhost",
+		Port:     "33333",
+		DBName:   "motting",
+		User:     "motting",
+		Password: "motting"}
+	conargs.SetDefault()
+}
 func TestPushTimeGET(t *testing.T) {
 
 	expected := model.PushTime{

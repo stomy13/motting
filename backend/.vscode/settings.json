@@ -1,4 +1,9 @@
 {
     "go.gopath": "${workspaceRoot}/.go",
     "go.testFlags": ["-v"],
+    "go.delveConfig": {
+        "dlvLoadConfig": {
+          "maxStringLen": 10000,
+        }
+    }
 }
