@@ -10,6 +10,7 @@ import (
 
 	"github.com/MasatoTokuse/motting/motting/dbaccess"
 	"github.com/MasatoTokuse/motting/motting/model"
+	"github.com/MasatoTokuse/motting/motting/test"
 )
 
 const urlPushTime = "http://loclahost:3000/pushtime/"
@@ -33,17 +34,17 @@ func TestPushTimeGET(t *testing.T) {
 
 	// レスポンスのステータスコードのテスト
 	if res.Code != http.StatusOK {
-		t.Errorf(errMsgResCode, res.Code)
+		t.Errorf(test.ErrMsgResCode, res.Code)
 	}
 
 	// レスポンスのテスト
 	var actual model.PushTime
 	json.Unmarshal(res.Body.Bytes(), &actual)
 	if actual.UserID != expected.UserID {
-		t.Errorf(errMsgNotMatchS, expected.UserID, actual.UserID)
+		t.Errorf(test.ErrMsgNotMatchS, expected.UserID, actual.UserID)
 	}
 	if actual.PushAt != expected.PushAt {
-		t.Errorf(errMsgNotMatchS, expected.PushAt, actual.PushAt)
+		t.Errorf(test.ErrMsgNotMatchS, expected.PushAt, actual.PushAt)
 	}
 
 	t.Logf("%#v", res)
@@ -72,27 +73,27 @@ func TestPushTimePATCH(t *testing.T) {
 
 	// レスポンスのステータスコードのテスト
 	if res.Code != http.StatusOK {
-		t.Errorf(errMsgResCode, res.Code)
+		t.Errorf(test.ErrMsgResCode, res.Code)
 	}
 
 	// レスポンスのテスト
 	resPushTime := model.PushTime{}
 	json.Unmarshal(res.Body.Bytes(), &resPushTime)
 	if resPushTime.UserID != expected.UserID {
-		t.Errorf(errMsgNotMatchS, expected.UserID, resPushTime.UserID)
+		t.Errorf(test.ErrMsgNotMatchS, expected.UserID, resPushTime.UserID)
 	}
 	if resPushTime.PushAt != expected.PushAt {
-		t.Errorf(errMsgNotMatchS, expected.PushAt, resPushTime.PushAt)
+		t.Errorf(test.ErrMsgNotMatchS, expected.PushAt, resPushTime.PushAt)
 	}
 
 	// DBが更新されていることの確認
 	actual := &model.PushTime{}
 	db.Where("user_id = ?", expected.UserID).Find(actual)
 	if actual.UserID != expected.UserID {
-		t.Errorf(errMsgNotMatchS, expected.UserID, actual.UserID)
+		t.Errorf(test.ErrMsgNotMatchS, expected.UserID, actual.UserID)
 	}
 	if actual.PushAt != expected.PushAt {
-		t.Errorf(errMsgNotMatchS, expected.PushAt, actual.PushAt)
+		t.Errorf(test.ErrMsgNotMatchS, expected.PushAt, actual.PushAt)
 	}
 
 }

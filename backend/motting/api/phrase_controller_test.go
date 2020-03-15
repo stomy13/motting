@@ -10,15 +10,12 @@ import (
 
 	"github.com/MasatoTokuse/motting/motting/dbaccess"
 	"github.com/MasatoTokuse/motting/motting/model"
+	"github.com/MasatoTokuse/motting/motting/test"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-const errMsgResCode = "invalid code: %d"
 const urlPhrase = "http://loclahost:3000/phrase/"
-const errMsgNotMatchD = "expected %d, got %d"
-const errMsgNotMatchS = "expected %s, got %s"
-const errMsgInvalidResBody = "invalid response: %#v"
 
 func setup() {
 	conargs := &dbaccess.ConnectArgs{
@@ -84,12 +81,12 @@ func TestPhraseGET(t *testing.T) {
 
 	// レスポンスのステータスコードのテスト
 	if res.Code != http.StatusOK {
-		t.Errorf(errMsgResCode, res.Code)
+		t.Errorf(test.ErrMsgResCode, res.Code)
 	}
 
 	// レスポンスのボディのテスト
 	if res.Body.String() == "" {
-		t.Errorf(errMsgInvalidResBody, res.Body.String())
+		t.Errorf(test.ErrMsgInvalidResBody, res.Body.String())
 	}
 
 }
@@ -121,12 +118,12 @@ func TestPhrasePOST(t *testing.T) {
 
 	// レスポンスのステータスコードのテスト
 	if res.Code != http.StatusOK {
-		t.Errorf(errMsgResCode, res.Code)
+		t.Errorf(test.ErrMsgResCode, res.Code)
 	}
 
 	// レスポンスのボディのテスト
 	if res.Body.String() == "" {
-		t.Errorf(errMsgInvalidResBody, res.Body.String())
+		t.Errorf(test.ErrMsgInvalidResBody, res.Body.String())
 	}
 
 	// 実行後テーブル件数取得
@@ -135,7 +132,7 @@ func TestPhrasePOST(t *testing.T) {
 
 	// 1レコード追加されていることの確認
 	if diff != 1 {
-		t.Errorf(errMsgNotMatchD, 1, diff)
+		t.Errorf(test.ErrMsgNotMatchD, 1, diff)
 	}
 }
 
@@ -164,12 +161,12 @@ func TestPhraseDELETE(t *testing.T) {
 
 	// レスポンスのステータスコードのテスト
 	if res.Code != http.StatusOK {
-		t.Errorf(errMsgResCode, res.Code)
+		t.Errorf(test.ErrMsgResCode, res.Code)
 	}
 
 	// レスポンスのボディのテスト
 	if res.Body.String() == "" {
-		t.Errorf(errMsgInvalidResBody, res.Body.String())
+		t.Errorf(test.ErrMsgInvalidResBody, res.Body.String())
 	}
 
 	// 実行後テーブル件数取得
@@ -178,7 +175,7 @@ func TestPhraseDELETE(t *testing.T) {
 
 	// 削除されていることの確認
 	if diff != -1 {
-		t.Errorf(errMsgNotMatchD, -1, diff)
+		t.Errorf(test.ErrMsgNotMatchD, -1, diff)
 	}
 
 }
@@ -210,25 +207,25 @@ func TestPhrasePATCH(t *testing.T) {
 
 	// レスポンスのステータスコードのテスト
 	if res.Code != http.StatusOK {
-		t.Errorf(errMsgResCode, res.Code)
+		t.Errorf(test.ErrMsgResCode, res.Code)
 	}
 
 	// レスポンスのボディのテスト
 	if res.Body.String() == "" {
-		t.Errorf(errMsgInvalidResBody, res.Body.String())
+		t.Errorf(test.ErrMsgInvalidResBody, res.Body.String())
 	}
 
 	// 更新されていることの確認
 	phrase := &model.Phrase{}
 	db.Where("id = ?", id).Find(phrase)
 	if phrase.UserID != userid {
-		t.Errorf(errMsgNotMatchS, userid, phrase.UserID)
+		t.Errorf(test.ErrMsgNotMatchS, userid, phrase.UserID)
 	}
 	if phrase.Text != text {
-		t.Errorf(errMsgNotMatchS, text, phrase.Text)
+		t.Errorf(test.ErrMsgNotMatchS, text, phrase.Text)
 	}
 	if phrase.Author != author {
-		t.Errorf(errMsgNotMatchS, author, phrase.Author)
+		t.Errorf(test.ErrMsgNotMatchS, author, phrase.Author)
 	}
 
 }

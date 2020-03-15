@@ -11,6 +11,7 @@ require (
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/spf13/cobra v0.0.6
 	github.com/spf13/viper v1.4.0
+	github.com/stretchr/testify v1.4.0
 	golang.org/x/tools/gopls v0.3.3 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 )
