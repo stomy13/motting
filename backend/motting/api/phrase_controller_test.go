@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -35,13 +36,47 @@ func getCount(db *gorm.DB) int {
 	return count
 }
 
+func cleanupTestDataPhrase(db *gorm.DB) {
+	db.Exec("TRUNCATE TABLE phrases;")
+}
+
+func prepareTestDataPhrase(db *gorm.DB) *[]model.Phrase {
+
+	cleanupTestDataPhrase(db)
+
+	phrases := []model.Phrase{}
+	for i := 1; i <= 10; i++ {
+		userid := ""
+		if i <= 5 {
+			userid = "whitebox"
+		} else {
+			userid = "blackbox"
+		}
+
+		phrase := model.Phrase{
+			UserID: userid,
+			Text:   "text" + strconv.Itoa(i),
+			Author: strconv.Itoa(i+10) + "author",
+		}
+		phrases = append(phrases, phrase)
+	}
+
+	for i := range phrases {
+		db.Create(&phrases[i])
+	}
+
+	return &phrases
+}
+
 func TestPhraseGET(t *testing.T) {
 
-	setup()
+	// テストデータ準備
+	db := dbaccess.ConnectGormInTest()
+	defer db.Close()
+	prepareTestDataPhrase(db)
 
-	// テスト用のリクエスト作成
+	// テスト用のリクエストとレスポンスを作成
 	req := httptest.NewRequest("GET", urlPhrase, nil)
-	// テスト用のレスポンス作成
 	res := httptest.NewRecorder()
 
 	// ハンドラーの実行
@@ -53,17 +88,18 @@ func TestPhraseGET(t *testing.T) {
 	}
 
 	// レスポンスのボディのテスト
-	// if res.Body.String() != "{\"ID\":1,\"CreatedAt\":\"2020-02-26T17:08:09Z\",\"UpdatedAt\":\"2020-02-26T17:08:09Z\",\"DeletedAt\":null,\"UserID\":\"whitebox\",\"Text\":\"諸行無常\",\"Author\":\"釈迦\"}" {
-	// 	t.Errorf(errMsgInvalidResBody, res.Body.String())
-	// }
+	if res.Body.String() == "" {
+		t.Errorf(errMsgInvalidResBody, res.Body.String())
+	}
 
-	t.Logf("%#v", res)
 }
 
 func TestPhrasePOST(t *testing.T) {
 
+	// テストデータ準備
 	db := dbaccess.ConnectGormInTest()
 	defer db.Close()
+	prepareTestDataPhrase(db)
 
 	// 実行前テーブル件数取得
 	before := getCount(db)
@@ -89,9 +125,9 @@ func TestPhrasePOST(t *testing.T) {
 	}
 
 	// レスポンスのボディのテスト
-	// if res.Body.String() != "ok" {
-	// 	t.Errorf(errMsgInvalidResBody, res.Body.String())
-	// }
+	if res.Body.String() == "" {
+		t.Errorf(errMsgInvalidResBody, res.Body.String())
+	}
 
 	// 実行後テーブル件数取得
 	after := getCount(db)
@@ -101,17 +137,16 @@ func TestPhrasePOST(t *testing.T) {
 	if diff != 1 {
 		t.Errorf(errMsgNotMatchD, 1, diff)
 	}
-
-	t.Logf("%#v", res)
 }
 
 func TestPhraseDELETE(t *testing.T) {
 
 	const id = "1"
 
-	setup()
+	// テストデータ準備
 	db := dbaccess.ConnectGormInTest()
 	defer db.Close()
+	prepareTestDataPhrase(db)
 
 	// 実行前テーブル件数取得
 	before := getCount(db)
@@ -133,11 +168,11 @@ func TestPhraseDELETE(t *testing.T) {
 	}
 
 	// レスポンスのボディのテスト
-	// if res.Body.String() != "ok" {
-	// 	t.Errorf(errMsgInvalidResBody, res.Body.String())
-	// }
+	if res.Body.String() == "" {
+		t.Errorf(errMsgInvalidResBody, res.Body.String())
+	}
 
-	// 実行前テーブル件数取得
+	// 実行後テーブル件数取得
 	after := getCount(db)
 	diff := after - before
 
@@ -145,12 +180,6 @@ func TestPhraseDELETE(t *testing.T) {
 	if diff != -1 {
 		t.Errorf(errMsgNotMatchD, -1, diff)
 	}
-
-	// 元に戻す
-	phrase := &model.Phrase{}
-	db.Unscoped().Model(&model.Phrase{}).Where("id = ?", id).First(phrase)
-	phrase.DeletedAt = nil
-	db.Unscoped().Save(phrase)
 
 }
 
@@ -161,9 +190,10 @@ func TestPhrasePATCH(t *testing.T) {
 	const text = "諸行無常2"
 	const author = "釈迦2"
 
-	setup()
+	// テストデータ準備
 	db := dbaccess.ConnectGormInTest()
 	defer db.Close()
+	prepareTestDataPhrase(db)
 
 	// テスト用のリクエスト作成
 	values := url.Values{}
@@ -184,9 +214,9 @@ func TestPhrasePATCH(t *testing.T) {
 	}
 
 	// レスポンスのボディのテスト
-	// if res.Body.String() != "ok" {
-	// 	t.Errorf(errMsgInvalidResBody, res.Body.String())
-	// }
+	if res.Body.String() == "" {
+		t.Errorf(errMsgInvalidResBody, res.Body.String())
+	}
 
 	// 更新されていることの確認
 	phrase := &model.Phrase{}

@@ -24,7 +24,6 @@ func (conargs *ConnectArgs) SetDefault() {
 var defaultConnectString string
 
 func ConnectGorm() *gorm.DB {
-	log.Println(defaultConnectString)
 	db, err := gorm.Open("mysql", defaultConnectString)
 
 	if err != nil {
