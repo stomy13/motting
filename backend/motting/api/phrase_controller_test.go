@@ -62,8 +62,7 @@ func TestPhraseGET(t *testing.T) {
 
 func TestPhrasePOST(t *testing.T) {
 
-	setup()
-	db := dbaccess.ConnectGorm()
+	db := dbaccess.ConnectGormInTest()
 	defer db.Close()
 
 	// 実行前テーブル件数取得
@@ -111,7 +110,7 @@ func TestPhraseDELETE(t *testing.T) {
 	const id = "1"
 
 	setup()
-	db := dbaccess.ConnectGorm()
+	db := dbaccess.ConnectGormInTest()
 	defer db.Close()
 
 	// 実行前テーブル件数取得
@@ -163,7 +162,7 @@ func TestPhrasePATCH(t *testing.T) {
 	const author = "釈迦2"
 
 	setup()
-	db := dbaccess.ConnectGorm()
+	db := dbaccess.ConnectGormInTest()
 	defer db.Close()
 
 	// テスト用のリクエスト作成

@@ -7,3 +7,7 @@ fi
 pushd motting
 go build
 popd
+
+pushd webpush
+go build
+popd

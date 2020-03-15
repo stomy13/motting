@@ -43,6 +43,7 @@ export default {
   async mounted() {
     await this.$store.dispatch('push_time/fetch')
     this.push_at = this.$store.state.push_time.push_at
+    this.$registPushNotification()
   },
   methods: {
     modify() {

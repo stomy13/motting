@@ -3,6 +3,7 @@ module github.com/MasatoTokuse/motting
 go 1.13
 
 require (
+	github.com/SherClockHolmes/webpush-go v1.1.0
 	github.com/ernesto-jimenez/gogen v0.0.0-20180125220232-d7d4131e6607 // indirect
 	github.com/go-chi/chi v4.0.3+incompatible
 	github.com/go-chi/cors v1.0.0
