@@ -12,6 +12,7 @@ export const mutations = {
 
 export const actions = {
   async fetch({ commit }) {
+    // todo:userid
     const res = await axios.get(this.$config.api_base_url + 'phrase')
     const phrases = res.data
     commit('set', phrases)
@@ -27,6 +28,7 @@ export const actions = {
   },
   async delete({ commit }, { id }) {
     const params = new URLSearchParams()
+    params.append('userid', 'whitebox')
     params.append('id', id)
     const res = await axios.delete(this.$config.api_base_url + 'phrase', {
       data: params

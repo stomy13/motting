@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/MasatoTokuse/motting/motting/dbaccess"
 	jsonwrapper "github.com/MasatoTokuse/motting/motting/json"
@@ -13,7 +12,6 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// TODO:クエリで検索できるようにする
 func PhraseGET(w http.ResponseWriter, r *http.Request) {
 
 	// リクエストから値を受けとる
@@ -69,17 +67,18 @@ func PhraseDELETE(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	id, err := strconv.Atoi(values.Get("id"))
-	if err != nil {
-		log.Fatalln(err)
-	}
-	phrase := &model.Phrase{}
-	phrase.ID = uint(id)
 
 	// Delete
 	db := dbaccess.ConnectGorm()
 	defer db.Close()
 	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.Phrase{})
+
+	phrase := &model.Phrase{}
+	db.Where("id = ?", values.Get("id")).Where("user_id = ?", values.Get("userid")).Find(phrase)
+	if phrase.ID == 0 {
+		fmt.Fprint(w, "ng")
+		return
+	}
 	db.Delete(phrase)
 
 	param := &dbaccess.ParamPhrase{
@@ -104,13 +103,12 @@ func PhrasePATCH(w http.ResponseWriter, r *http.Request) {
 	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.Phrase{})
 
 	phrase := &model.Phrase{}
-	db.Where("id = ?", values.Get("id")).Find(phrase)
+	db.Where("id = ?", values.Get("id")).Where("user_id = ?", values.Get("userid")).Find(phrase)
 	if phrase.ID == 0 {
 		fmt.Fprint(w, "ng")
 		return
 	}
 
-	phrase.UserID = values.Get("userid")
 	phrase.Text = values.Get("text")
 	phrase.Author = values.Get("author")
 	db.Save(phrase)

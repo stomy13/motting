@@ -86,6 +86,7 @@ func TestPhraseGET(t *testing.T) {
 }
 
 func testPhraseGET(t *testing.T, values *url.Values, expected []model.Phrase) {
+
 	// テスト用のリクエストとレスポンスを作成
 	req := httptest.NewRequest("GET", urlPhrase, strings.NewReader(values.Encode()))
 	res := httptest.NewRecorder()
