@@ -2,36 +2,45 @@ package api
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 	"strconv"
 
 	"github.com/MasatoTokuse/motting/motting/dbaccess"
 	jsonwrapper "github.com/MasatoTokuse/motting/motting/json"
 	"github.com/MasatoTokuse/motting/motting/model"
+	"github.com/MasatoTokuse/motting/motting/util"
 	"github.com/jinzhu/gorm"
 )
 
 // TODO:クエリで検索できるようにする
 func PhraseGET(w http.ResponseWriter, r *http.Request) {
 
+	// リクエストから値を受けとる
+	values, err := util.ParseBody(&r.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// valuesチェック
+	param := &dbaccess.ParamPhrase{
+		ID:     values.Get("id"),
+		UserID: values.Get("userid"),
+		Text:   values.Get("text"),
+		Author: values.Get("author"),
+	}
+
 	db := dbaccess.ConnectGorm()
 	defer db.Close()
 	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.Phrase{})
 
-	responsePhrases(w, db)
+	responsePhrases(w, db, param)
 }
 
 func PhrasePOST(w http.ResponseWriter, r *http.Request) {
 
 	// リクエストから値を受けとる
-	bytes, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	values, err := url.ParseQuery(string(bytes))
+	values, err := util.ParseBody(&r.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -47,17 +56,16 @@ func PhrasePOST(w http.ResponseWriter, r *http.Request) {
 	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.Phrase{})
 	db.Create(phrase)
 
-	responsePhrases(w, db)
+	param := &dbaccess.ParamPhrase{
+		UserID: values.Get("userid"),
+	}
+	responsePhrases(w, db, param)
 }
 
 func PhraseDELETE(w http.ResponseWriter, r *http.Request) {
 
 	// リクエストから値を受けとる
-	bytes, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	values, err := url.ParseQuery(string(bytes))
+	values, err := util.ParseBody(&r.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -74,17 +82,16 @@ func PhraseDELETE(w http.ResponseWriter, r *http.Request) {
 	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.Phrase{})
 	db.Delete(phrase)
 
-	responsePhrases(w, db)
+	param := &dbaccess.ParamPhrase{
+		UserID: values.Get("userid"),
+	}
+	responsePhrases(w, db, param)
 }
 
 func PhrasePATCH(w http.ResponseWriter, r *http.Request) {
 
 	// リクエストから値を受けとる
-	bytes, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	values, err := url.ParseQuery(string(bytes))
+	values, err := util.ParseBody(&r.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -108,11 +115,14 @@ func PhrasePATCH(w http.ResponseWriter, r *http.Request) {
 	phrase.Author = values.Get("author")
 	db.Save(phrase)
 
-	responsePhrases(w, db)
+	param := &dbaccess.ParamPhrase{
+		UserID: values.Get("userid"),
+	}
+	responsePhrases(w, db, param)
 }
 
-func responsePhrases(w http.ResponseWriter, db *gorm.DB) {
-	phrases := dbaccess.PhrasesAll(db)
+func responsePhrases(w http.ResponseWriter, db *gorm.DB, param *dbaccess.ParamPhrase) {
+	phrases := dbaccess.QueryPhrases(db, param)
 	phrasesJSON, err := jsonwrapper.MarshalString(phrases)
 	if err != nil {
 		fmt.Fprint(w, err)
