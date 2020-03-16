@@ -3,27 +3,32 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 
 	"github.com/MasatoTokuse/motting/motting/dbaccess"
 	"github.com/MasatoTokuse/motting/motting/model"
+	"github.com/MasatoTokuse/motting/motting/util"
 )
 
 func PushTimeGET(w http.ResponseWriter, r *http.Request) {
+
+	// リクエストから値を受けとる
+	values, err := util.ParseBody(&r.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	db := dbaccess.ConnectGorm()
 	defer db.Close()
 	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.PushTime{})
 	pt := &model.PushTime{}
-	db.First(pt)
+	db.Where("user_id = ?", values.Get("userid")).First(pt)
 
 	// At first request, insert initial record
 	if pt.ID == 0 {
 		initialPushTime := &model.PushTime{
-			UserID: "whitebox",
+			UserID: values.Get("userid"),
 			PushAt: "10:00",
 		}
 		db.Create(initialPushTime)
@@ -31,19 +36,13 @@ func PushTimeGET(w http.ResponseWriter, r *http.Request) {
 	}
 
 	pushTimeJSON, _ := json.Marshal(pt)
-	fmt.Println(*pt)
-
 	fmt.Fprint(w, string(pushTimeJSON))
 }
 
 func PushTimePATCH(w http.ResponseWriter, r *http.Request) {
 
 	// リクエストから値を受けとる
-	bytes, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	values, err := url.ParseQuery(string(bytes))
+	values, err := util.ParseBody(&r.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -65,7 +64,5 @@ func PushTimePATCH(w http.ResponseWriter, r *http.Request) {
 	db.Save(pt)
 
 	pushTimeJSON, _ := json.Marshal(pt)
-	fmt.Println(*pt)
-
 	fmt.Fprint(w, string(pushTimeJSON))
 }

@@ -113,9 +113,9 @@ func testPhraseGET(t *testing.T, values *url.Values, expected []model.Phrase) {
 	// 各フィールドが一致すること
 	for i, act := range actual {
 		assert.Equal(t, expected[i].ID, act.ID, test.ErrMsgNotMatchD, expected[i].ID, act.ID)
-		assert.Equal(t, expected[i].UserID, act.UserID, test.ErrMsgNotMatchD, expected[i].UserID, act.UserID)
-		assert.Equal(t, expected[i].Text, act.Text, test.ErrMsgNotMatchD, expected[i].Text, act.Text)
-		assert.Equal(t, expected[i].Author, act.Author, test.ErrMsgNotMatchD, expected[i].Author, act.Author)
+		assert.Equal(t, expected[i].UserID, act.UserID, test.ErrMsgNotMatchS, expected[i].UserID, act.UserID)
+		assert.Equal(t, expected[i].Text, act.Text, test.ErrMsgNotMatchS, expected[i].Text, act.Text)
+		assert.Equal(t, expected[i].Author, act.Author, test.ErrMsgNotMatchS, expected[i].Author, act.Author)
 	}
 
 }
