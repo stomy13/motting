@@ -171,22 +171,19 @@ func TestPhrasePOST(t *testing.T) {
 
 func TestPhraseDELETE(t *testing.T) {
 
-	const id = "1"
-
 	// テストデータ準備
 	db := dbaccess.ConnectGormInTest()
 	defer db.Close()
-	prepareTestDataPhrase(db)
+	expected := (*prepareTestDataPhrase(db))[1:5]
 
 	// 実行前テーブル件数取得
 	before := getCount(db)
 
-	// テスト用のリクエスト作成
+	// テスト用のリクエストとレスポンスを作成
 	values := url.Values{}
 	values.Set("userid", "whitebox")
-	values.Add("id", id)
+	values.Add("id", "1")
 	req := httptest.NewRequest("DELETE", urlPhrase, strings.NewReader(values.Encode()))
-	// テスト用のレスポンス作成
 	res := httptest.NewRecorder()
 
 	// ハンドラーの実行
@@ -198,8 +195,18 @@ func TestPhraseDELETE(t *testing.T) {
 	}
 
 	// レスポンスのボディのテスト
-	if res.Body.String() == "" {
-		t.Errorf(test.ErrMsgInvalidResBody, res.Body.String())
+	var actual []model.Phrase
+	json.Unmarshal(res.Body.Bytes(), &actual)
+
+	// 件数が一致すること
+	assert.Equal(t, len(expected), len(actual), test.ErrMsgNotMatchD, len(expected), len(actual))
+
+	// 各フィールドが一致すること
+	for i, act := range actual {
+		assert.Equal(t, expected[i].ID, act.ID, test.ErrMsgNotMatchD, expected[i].ID, act.ID)
+		assert.Equal(t, expected[i].UserID, act.UserID, test.ErrMsgNotMatchS, expected[i].UserID, act.UserID)
+		assert.Equal(t, expected[i].Text, act.Text, test.ErrMsgNotMatchS, expected[i].Text, act.Text)
+		assert.Equal(t, expected[i].Author, act.Author, test.ErrMsgNotMatchS, expected[i].Author, act.Author)
 	}
 
 	// 実行後テーブル件数取得
