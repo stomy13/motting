@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -96,12 +95,8 @@ func testPhraseGET(t *testing.T, query string, expected []model.Phrase) {
 	}
 
 	// レスポンスのボディのテスト
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		t.Error(err)
-	}
 	var actual []model.Phrase
-	json.Unmarshal(body, &actual)
+	json.Unmarshal(res.Body.Bytes(), &actual)
 
 	// 件数が一致すること
 	assert.Equal(t, len(expected), len(actual), test.ErrMsgNotMatchD, len(expected), len(actual))
@@ -121,21 +116,24 @@ func TestPhrasePOST(t *testing.T) {
 	// テストデータ準備
 	db := dbaccess.ConnectGormInTest()
 	defer db.Close()
-	prepareTestDataPhrase(db)
+	expected := (*prepareTestDataPhrase(db))[:5]
+	phrase := model.Phrase{
+		UserID: "whitebox",
+		Text:   "諸行無常",
+		Author: "釈迦",
+	}
+	phrase.ID = 11
+	expected = append(expected, phrase)
 
 	// 実行前テーブル件数取得
 	before := getCount(db)
 
-	// テスト用のリクエスト作成
+	// テスト用のリクエストとレスポンスを作成
 	values := url.Values{}
-	values.Set("userid", "whitebox")
-	values.Add("text", "諸行無常")
-	values.Add("author", "釈迦")
+	values.Set("userid", phrase.UserID)
+	values.Add("text", phrase.Text)
+	values.Add("author", phrase.Author)
 	req := httptest.NewRequest("POST", urlPhrase, strings.NewReader(values.Encode()))
-	// Content-Type 設定
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-
-	// テスト用のレスポンス作成
 	res := httptest.NewRecorder()
 
 	// ハンドラーの実行
@@ -147,8 +145,18 @@ func TestPhrasePOST(t *testing.T) {
 	}
 
 	// レスポンスのボディのテスト
-	if res.Body.String() == "" {
-		t.Errorf(test.ErrMsgInvalidResBody, res.Body.String())
+	var actual []model.Phrase
+	json.Unmarshal(res.Body.Bytes(), &actual)
+
+	// 件数が一致すること
+	assert.Equal(t, len(expected), len(actual), test.ErrMsgNotMatchD, len(expected), len(actual))
+
+	// 各フィールドが一致すること
+	for i, act := range actual {
+		assert.Equal(t, expected[i].ID, act.ID, test.ErrMsgNotMatchD, expected[i].ID, act.ID)
+		assert.Equal(t, expected[i].UserID, act.UserID, test.ErrMsgNotMatchS, expected[i].UserID, act.UserID)
+		assert.Equal(t, expected[i].Text, act.Text, test.ErrMsgNotMatchS, expected[i].Text, act.Text)
+		assert.Equal(t, expected[i].Author, act.Author, test.ErrMsgNotMatchS, expected[i].Author, act.Author)
 	}
 
 	// 実行後テーブル件数取得
