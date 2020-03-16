@@ -12,8 +12,11 @@ export const mutations = {
 
 export const actions = {
   async fetch({ commit }) {
-    // todo:userid
-    const res = await axios.get(this.$config.api_base_url + 'phrase')
+    const res = await axios.get(this.$config.api_base_url + 'phrase', {
+      params: {
+        userid: 'whitebox'
+      }
+    })
     const phrases = res.data
     commit('set', phrases)
   },

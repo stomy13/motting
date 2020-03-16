@@ -66,26 +66,24 @@ func TestPushTimeGET(t *testing.T) {
 	testdata := prepareTestDataPushTime(db)
 
 	// テスト用のリクエスト作成
-	values := url.Values{}
-	values.Set("userid", "whitebox")
-	testPushTimeGET(t, &values, (*testdata)[0])
+	query := "?userid=whitebox"
+	testPushTimeGET(t, query, (*testdata)[0])
 
 	// 初回アクセス時のテスト
-	values = url.Values{}
-	values.Set("userid", "bluebox")
+	query = "?userid=bluebox"
 	expected := model.PushTime{
 		UserID: "bluebox",
 		PushAt: "10:00",
 	}
 	expected.ID = 3
-	testPushTimeGET(t, &values, expected)
+	testPushTimeGET(t, query, expected)
 
 }
 
-func testPushTimeGET(t *testing.T, values *url.Values, expected model.PushTime) {
+func testPushTimeGET(t *testing.T, query string, expected model.PushTime) {
 
 	// テスト用のリクエストとレスポンスを作成
-	req := httptest.NewRequest("GET", urlPushTime, strings.NewReader(values.Encode()))
+	req := httptest.NewRequest("GET", urlPushTime+query, nil)
 	res := httptest.NewRecorder()
 
 	// ハンドラーの実行

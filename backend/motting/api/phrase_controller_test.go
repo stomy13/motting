@@ -65,30 +65,26 @@ func TestPhraseGET(t *testing.T) {
 	defer db.Close()
 	testdata := prepareTestDataPhrase(db)
 
-	values := url.Values{}
-	values.Set("userid", "whitebox")
-	testPhraseGET(t, &values, (*testdata)[0:5])
+	query := "?userid=whitebox"
+	testPhraseGET(t, query, (*testdata)[0:5])
 
-	values = url.Values{}
-	values.Set("userid", "whitebox")
-	values.Add("text", "3")
-	testPhraseGET(t, &values, (*testdata)[2:3])
+	query = "?userid=whitebox"
+	query += "&text=3"
+	testPhraseGET(t, query, (*testdata)[2:3])
 
-	values = url.Values{}
-	values.Set("userid", "whitebox")
-	values.Add("author", "4")
-	testPhraseGET(t, &values, (*testdata)[3:4])
+	query = "?userid=whitebox"
+	query += "&author=4"
+	testPhraseGET(t, query, (*testdata)[3:4])
 
-	values = url.Values{}
-	values.Set("userid", "box")
-	testPhraseGET(t, &values, []model.Phrase{})
+	query = "?userid=box"
+	testPhraseGET(t, query, []model.Phrase{})
 
 }
 
-func testPhraseGET(t *testing.T, values *url.Values, expected []model.Phrase) {
+func testPhraseGET(t *testing.T, query string, expected []model.Phrase) {
 
 	// テスト用のリクエストとレスポンスを作成
-	req := httptest.NewRequest("GET", urlPhrase, strings.NewReader(values.Encode()))
+	req := httptest.NewRequest("GET", urlPhrase+query, nil)
 	res := httptest.NewRecorder()
 
 	// ハンドラーの実行

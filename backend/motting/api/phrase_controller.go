@@ -15,10 +15,7 @@ import (
 func PhraseGET(w http.ResponseWriter, r *http.Request) {
 
 	// リクエストから値を受けとる
-	values, err := util.ParseBody(&r.Body)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	values := r.URL.Query()
 
 	// valuesチェック
 	param := &dbaccess.ParamPhrase{
