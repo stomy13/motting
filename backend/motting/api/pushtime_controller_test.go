@@ -112,20 +112,21 @@ func testPushTimeGET(t *testing.T, values *url.Values, expected model.PushTime) 
 
 func TestPushTimePATCH(t *testing.T) {
 
+	// テストデータ準備
+	db := dbaccess.ConnectGormInTest()
+	defer db.Close()
+	prepareTestDataPushTime(db)
+
 	expected := model.PushTime{
 		UserID: "blackbox",
 		PushAt: "18:00",
 	}
 
-	db := dbaccess.ConnectGormInTest()
-	defer db.Close()
-
-	// テスト用のリクエスト作成
+	// テスト用のリクエストとレスポンスを作成
 	values := url.Values{}
 	values.Add("userid", expected.UserID)
 	values.Add("pushAt", expected.PushAt)
 	req := httptest.NewRequest("PATCH", urlPhrase, strings.NewReader(values.Encode()))
-	// テスト用のレスポンス作成
 	res := httptest.NewRecorder()
 
 	// ハンドラーの実行
@@ -137,23 +138,15 @@ func TestPushTimePATCH(t *testing.T) {
 	}
 
 	// レスポンスのテスト
-	resPushTime := model.PushTime{}
-	json.Unmarshal(res.Body.Bytes(), &resPushTime)
-	if resPushTime.UserID != expected.UserID {
-		t.Errorf(test.ErrMsgNotMatchS, expected.UserID, resPushTime.UserID)
-	}
-	if resPushTime.PushAt != expected.PushAt {
-		t.Errorf(test.ErrMsgNotMatchS, expected.PushAt, resPushTime.PushAt)
-	}
+	resPushTime := &model.PushTime{}
+	json.Unmarshal(res.Body.Bytes(), resPushTime)
+	assert.Equal(t, expected.UserID, resPushTime.UserID, test.ErrMsgNotMatchS, expected.UserID, resPushTime.UserID)
+	assert.Equal(t, expected.PushAt, resPushTime.PushAt, test.ErrMsgNotMatchS, expected.PushAt, resPushTime.PushAt)
 
 	// DBが更新されていることの確認
 	actual := &model.PushTime{}
 	db.Where("user_id = ?", expected.UserID).Find(actual)
-	if actual.UserID != expected.UserID {
-		t.Errorf(test.ErrMsgNotMatchS, expected.UserID, actual.UserID)
-	}
-	if actual.PushAt != expected.PushAt {
-		t.Errorf(test.ErrMsgNotMatchS, expected.PushAt, actual.PushAt)
-	}
+	assert.Equal(t, expected.UserID, actual.UserID, test.ErrMsgNotMatchS, expected.UserID, actual.UserID)
+	assert.Equal(t, expected.PushAt, actual.PushAt, test.ErrMsgNotMatchS, expected.PushAt, actual.PushAt)
 
 }
