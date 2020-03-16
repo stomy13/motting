@@ -230,16 +230,17 @@ func TestPhrasePATCH(t *testing.T) {
 	// テストデータ準備
 	db := dbaccess.ConnectGormInTest()
 	defer db.Close()
-	prepareTestDataPhrase(db)
+	expected := (*prepareTestDataPhrase(db))[:5]
+	expected[1].Text = text
+	expected[1].Author = author
 
-	// テスト用のリクエスト作成
+	// テスト用のリクエストとレスポンスを作成
 	values := url.Values{}
 	values.Set("id", id)
 	values.Add("userid", userid)
 	values.Add("text", text)
 	values.Add("author", author)
 	req := httptest.NewRequest("PATCH", urlPhrase, strings.NewReader(values.Encode()))
-	// テスト用のレスポンス作成
 	res := httptest.NewRecorder()
 
 	// ハンドラーの実行
@@ -251,21 +252,25 @@ func TestPhrasePATCH(t *testing.T) {
 	}
 
 	// レスポンスのボディのテスト
-	if res.Body.String() == "" {
-		t.Errorf(test.ErrMsgInvalidResBody, res.Body.String())
+	var actual []model.Phrase
+	json.Unmarshal(res.Body.Bytes(), &actual)
+
+	// 件数が一致すること
+	assert.Equal(t, len(expected), len(actual), test.ErrMsgNotMatchD, len(expected), len(actual))
+
+	// 各フィールドが一致すること
+	for i, act := range actual {
+		assert.Equal(t, expected[i].ID, act.ID, test.ErrMsgNotMatchD, expected[i].ID, act.ID)
+		assert.Equal(t, expected[i].UserID, act.UserID, test.ErrMsgNotMatchS, expected[i].UserID, act.UserID)
+		assert.Equal(t, expected[i].Text, act.Text, test.ErrMsgNotMatchS, expected[i].Text, act.Text)
+		assert.Equal(t, expected[i].Author, act.Author, test.ErrMsgNotMatchS, expected[i].Author, act.Author)
 	}
 
 	// 更新されていることの確認
 	phrase := &model.Phrase{}
 	db.Where("id = ?", id).Find(phrase)
-	if phrase.UserID != userid {
-		t.Errorf(test.ErrMsgNotMatchS, userid, phrase.UserID)
-	}
-	if phrase.Text != text {
-		t.Errorf(test.ErrMsgNotMatchS, text, phrase.Text)
-	}
-	if phrase.Author != author {
-		t.Errorf(test.ErrMsgNotMatchS, author, phrase.Author)
-	}
+	assert.Equal(t, userid, phrase.UserID, test.ErrMsgNotMatchS, userid, phrase.UserID)
+	assert.Equal(t, text, phrase.Text, test.ErrMsgNotMatchS, text, phrase.Text)
+	assert.Equal(t, author, phrase.Author, test.ErrMsgNotMatchS, author, phrase.Author)
 
 }
