@@ -47,6 +47,10 @@ func NewHandler() *chi.Mux {
 	r.Delete(urlPhrase, api.PhraseDELETE)
 	r.Patch(urlPhrase, api.PhrasePATCH)
 
+	// TODO Verify
+	const urlUsersPushTo = "/admin/api/v1/pushTo"
+	r.Get(urlUsersPushTo, api.UsersPushToGET)
+
 	return r
 }
 
