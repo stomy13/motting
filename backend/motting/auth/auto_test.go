@@ -141,6 +141,13 @@ func TestSignUpHandler_Error(t *testing.T) {
 			},
 			ExpectedRespMsg: "email is empty",
 		},
+		{
+			User: model.User{
+				Email:    "whitebox@sample.com",
+				Password: "whitebox",
+			},
+			ExpectedRespMsg: "this email is already used",
+		},
 	}
 
 	for _, c := range cases {
