@@ -12,6 +12,7 @@ import (
 	"github.com/MasatoTokuse/motting/motting/test"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const urlSignUp = "http://localhost:3001/api/v1/signup"
@@ -104,7 +105,12 @@ func TestSignUpHandler_Success(t *testing.T) {
 	// 各フィールドが一致すること
 	assert.Equal(t, expected.ID, actual.ID)
 	assert.Equal(t, expected.Email, actual.Email)
-	assert.Equal(t, expected.Password, actual.Password)
+	assert.NotEqual(t, "", actual.Password)
+
+	err := bcrypt.CompareHashAndPassword([]byte(actual.Password), []byte(expected.Password))
+	if err != nil {
+		t.Error(err)
+	}
 
 }
 

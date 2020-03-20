@@ -8,6 +8,7 @@ import (
 	"github.com/MasatoTokuse/motting/motting/dbaccess"
 	"github.com/MasatoTokuse/motting/motting/model"
 	"github.com/MasatoTokuse/motting/motting/util"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func SignUpHandler(w http.ResponseWriter, r *http.Request) {
@@ -42,6 +43,16 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Hash password
+	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		fmt.Fprint(w, err)
+		return
+	}
+	// fmt.Println("パスワード: ", user.Password)
+	// fmt.Println("ハッシュ化されたパスワード", hash)
+	user.Password = string(hash)
+	// fmt.Println("コンバート後のパスワード: ", user.Password)
+
 	// Insert
 	db.Create(user)
 
