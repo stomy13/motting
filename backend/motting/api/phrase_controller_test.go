@@ -118,11 +118,11 @@ func TestPhrasePOST(t *testing.T) {
 	defer db.Close()
 	expected := (*prepareTestDataPhrase(db))[:5]
 	phrase := model.Phrase{
+		Model:  gorm.Model{ID: 11},
 		UserID: "whitebox",
 		Text:   "諸行無常",
 		Author: "釈迦",
 	}
-	phrase.ID = 11
 	expected = append(expected, phrase)
 
 	// 実行前テーブル件数取得

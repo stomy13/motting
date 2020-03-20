@@ -53,7 +53,7 @@ func getCountUsers(db *gorm.DB) int {
 	return count
 }
 
-func TestSignUpHandler(t *testing.T) {
+func TestSignUpHandler_Success(t *testing.T) {
 
 	// テストデータ準備
 	db := dbaccess.ConnectGormInTest()
@@ -62,10 +62,10 @@ func TestSignUpHandler(t *testing.T) {
 	prepareTestDataUser(db)
 
 	expected := model.User{
+		Model:    gorm.Model{ID: 3},
 		Email:    "bluebox@sample.com",
 		Password: "bluebox",
 	}
-	expected.ID = 3
 
 	// 実行前テーブル件数取得
 	before := getCountUsers(db)
@@ -105,5 +105,76 @@ func TestSignUpHandler(t *testing.T) {
 	assert.Equal(t, expected.ID, actual.ID)
 	assert.Equal(t, expected.Email, actual.Email)
 	assert.Equal(t, expected.Password, actual.Password)
+
+}
+
+func TestSignUpHandler_Error(t *testing.T) {
+
+	// テストデータ準備
+	db := dbaccess.ConnectGormInTest()
+	defer db.Close()
+	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.User{})
+	prepareTestDataUser(db)
+
+	cases := []struct {
+		model.User
+		ExpectedRespMsg string
+	}{
+		{
+			User: model.User{
+				Email:    "",
+				Password: "bluebox",
+			},
+			ExpectedRespMsg: "email is empty",
+		},
+		{
+			User: model.User{
+				Email:    "bluebox@sample.com",
+				Password: "",
+			},
+			ExpectedRespMsg: "password is empty",
+		},
+		{
+			User: model.User{
+				Email:    "",
+				Password: "",
+			},
+			ExpectedRespMsg: "email is empty",
+		},
+	}
+
+	for _, c := range cases {
+
+		// 実行前テーブル件数取得
+		before := getCountUsers(db)
+
+		// テスト用のリクエストとレスポンスを作成
+		values := url.Values{}
+		values.Set("email", c.Email)
+		values.Add("password", c.Password)
+		req := httptest.NewRequest("POST", urlSignUp, strings.NewReader(values.Encode()))
+		res := httptest.NewRecorder()
+
+		// ハンドラーの実行
+		SignUpHandler(res, req)
+
+		// レスポンスのステータスコードのテスト
+		if res.Code != http.StatusOK {
+			t.Errorf(test.ErrMsgResCode, res.Code)
+		}
+
+		// レスポンスのボディのテスト
+		assert.Equal(t, c.ExpectedRespMsg, res.Body.String())
+
+		// 実行後テーブル件数取得
+		after := getCountUsers(db)
+		diff := after - before
+
+		// レコード追加されていないことの確認
+		if diff != 0 {
+			t.Errorf(test.ErrMsgNotMatchD, 1, diff)
+		}
+
+	}
 
 }

@@ -72,10 +72,10 @@ func TestPushTimeGET(t *testing.T) {
 	// 初回アクセス時のテスト
 	query = "?userid=bluebox"
 	expected := model.PushTime{
+		Model:  gorm.Model{ID: 3},
 		UserID: "bluebox",
 		PushAt: "10:00",
 	}
-	expected.ID = 3
 	testPushTimeGET(t, query, expected)
 
 }
