@@ -9,18 +9,16 @@ import (
 
 func TestUser(t *testing.T) {
 	user := &User{
-		UserID:   "whitebox",
+		Email:    "whitebox@sample.com",
 		Password: "password",
-		Email:    "masato@sample.com",
 	}
-	t.Log(user.UserID)
-	t.Log(user.Password)
 	t.Log(user.Email)
+	t.Log(user.Password)
 }
 
 func TestUserValidate(t *testing.T) {
 	user := &User{
-		UserID:   "whitebox",
+		Email:    "whitebox@sample.com",
 		Password: "",
 	}
 
@@ -32,7 +30,7 @@ func TestUserValidate(t *testing.T) {
 	}
 
 	user = &User{
-		UserID:   "",
+		Email:    "",
 		Password: "password",
 	}
 
@@ -40,11 +38,11 @@ func TestUserValidate(t *testing.T) {
 	if err == nil {
 		t.Error("expected error, got nil")
 	} else {
-		assert.Equal(t, errMsgUserIDEmpty, err.Error())
+		assert.Equal(t, errMsgEmailEmpty, err.Error())
 	}
 
 	user = &User{
-		UserID:   "whitebox",
+		Email:    "whitebox@sample.com",
 		Password: "password",
 	}
 
