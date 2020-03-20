@@ -17,7 +17,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const urlPhrase = "http://loclahost:3000/phrase/"
+const urlPhrase = "http://loclahost:3001/api/v1/phrase/"
 
 func getCount(db *gorm.DB) int {
 	var count int

@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const urlPushTime = "http://loclahost:3000/pushtime/"
+const urlPushTime = "http://loclahost:3001/api/v1/pushtime/"
 
 func setup() {
 	conargs := &dbaccess.ConnectArgs{
