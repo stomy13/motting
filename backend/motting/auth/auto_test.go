@@ -1,0 +1,100 @@
+package auth
+
+import (
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"strings"
+	"testing"
+
+	"github.com/MasatoTokuse/motting/motting/dbaccess"
+	"github.com/MasatoTokuse/motting/motting/model"
+	"github.com/MasatoTokuse/motting/motting/test"
+	"github.com/jinzhu/gorm"
+	"github.com/stretchr/testify/assert"
+)
+
+const urlSignUp = "http://localhost:3001/api/v1/signup"
+
+func cleanupTestDataUser(db *gorm.DB) {
+	db.Exec("TRUNCATE TABLE users;")
+}
+
+func prepareTestDataUser(db *gorm.DB) *[]model.User {
+
+	cleanupTestDataUser(db)
+
+	users := []model.User{}
+	for i := 1; i <= 2; i++ {
+		email := ""
+		if i == 1 {
+			email = "whitebox"
+		} else {
+			email = "blackbox"
+		}
+
+		user := model.User{
+			Email:    email + "@sample.com",
+			Password: email,
+		}
+		users = append(users, user)
+	}
+
+	for i := range users {
+		db.Create(&users[i])
+	}
+
+	return &users
+}
+
+func getCountUsers(db *gorm.DB) int {
+	var count int
+	db.Model(&model.User{}).Count(&count)
+	return count
+}
+
+func TestSignUpHandler(t *testing.T) {
+
+	// テストデータ準備
+	db := dbaccess.ConnectGormInTest()
+	defer db.Close()
+	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.User{})
+	prepareTestDataUser(db)
+
+	user := model.User{
+		Email:    "bluebox@sample.com",
+		Password: "bluebox",
+	}
+	user.ID = 3
+
+	// 実行前テーブル件数取得
+	before := getCountUsers(db)
+
+	// テスト用のリクエストとレスポンスを作成
+	values := url.Values{}
+	values.Set("email", user.Email)
+	values.Add("password", user.Password)
+	req := httptest.NewRequest("POST", urlSignUp, strings.NewReader(values.Encode()))
+	res := httptest.NewRecorder()
+
+	// ハンドラーの実行
+	SignUpHandler(res, req)
+
+	// レスポンスのステータスコードのテスト
+	if res.Code != http.StatusOK {
+		t.Errorf(test.ErrMsgResCode, res.Code)
+	}
+
+	// レスポンスのボディのテスト
+	assert.Equal(t, "ok", res.Body.String())
+
+	// 実行後テーブル件数取得
+	after := getCountUsers(db)
+	diff := after - before
+
+	// 1レコード追加されていることの確認
+	if diff != 1 {
+		t.Errorf(test.ErrMsgNotMatchD, 1, diff)
+	}
+
+}

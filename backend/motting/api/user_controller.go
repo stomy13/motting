@@ -23,6 +23,7 @@ func UsersPushToGET(w http.ResponseWriter, r *http.Request) {
 	pushTimeJSON, err := jsonwrapper.MarshalString(&pt)
 	if err != nil {
 		fmt.Fprint(w, err)
+		return
 	}
 	fmt.Fprint(w, pushTimeJSON)
 }
