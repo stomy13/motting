@@ -61,19 +61,19 @@ func TestSignUpHandler(t *testing.T) {
 	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.User{})
 	prepareTestDataUser(db)
 
-	user := model.User{
+	expected := model.User{
 		Email:    "bluebox@sample.com",
 		Password: "bluebox",
 	}
-	user.ID = 3
+	expected.ID = 3
 
 	// 実行前テーブル件数取得
 	before := getCountUsers(db)
 
 	// テスト用のリクエストとレスポンスを作成
 	values := url.Values{}
-	values.Set("email", user.Email)
-	values.Add("password", user.Password)
+	values.Set("email", expected.Email)
+	values.Add("password", expected.Password)
 	req := httptest.NewRequest("POST", urlSignUp, strings.NewReader(values.Encode()))
 	res := httptest.NewRecorder()
 
@@ -96,5 +96,14 @@ func TestSignUpHandler(t *testing.T) {
 	if diff != 1 {
 		t.Errorf(test.ErrMsgNotMatchD, 1, diff)
 	}
+
+	// DBに登録されているか
+	var actual model.User
+	db.Where("id = ?", expected.ID).Find(&actual)
+
+	// 各フィールドが一致すること
+	assert.Equal(t, expected.ID, actual.ID)
+	assert.Equal(t, expected.Email, actual.Email)
+	assert.Equal(t, expected.Password, actual.Password)
 
 }
