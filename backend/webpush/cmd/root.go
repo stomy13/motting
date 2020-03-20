@@ -39,30 +39,64 @@ func NewCmdRoot() *cobra.Command {
 			conargs := getConnectArgs()
 			conargs.SetDefault()
 
-			// http GET
-			resp, err := http.Get("http://localhost:3001/api/v1/phrase")
+			pushAt := time.Now().Format("15:04")
+
+			// Fetch users receiving message
+			respPushTo, err := http.Get("http://localhost:3001/admin/api/v1/pushTo?pushAt=" + pushAt)
 			if err != nil {
 				return
 			}
-			defer resp.Body.Close()
+			defer respPushTo.Body.Close()
 
-			bytes, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				return
-			}
-
-			var phrases []model.Phrase
-			err = json.Unmarshal(bytes, &phrases)
+			bytes, err := ioutil.ReadAll(respPushTo.Body)
 			if err != nil {
 				return
 			}
 
-			rand.Seed(time.Now().UnixNano())
-			randIndex := rand.Intn(len(phrases))
-			phrase := phrases[randIndex]
+			var pushtimes []model.PushTime
+			err = json.Unmarshal(bytes, &pushtimes)
+			if err != nil {
+				return
+			}
 
-			message := message.NewMessage(phrase.Author, phrase.Text)
-			err = message.Push()
+			for _, pushtime := range pushtimes {
+
+				// Fetch user's pushed phrase
+				respPhrases, err := http.Get("http://localhost:3001/api/v1/phrase?userid=" + pushtime.UserID)
+				if err != nil {
+					log.Println(err)
+					continue
+				}
+				defer respPhrases.Body.Close()
+
+				bytes, err = ioutil.ReadAll(respPhrases.Body)
+				if err != nil {
+					log.Println(err)
+					continue
+				}
+
+				var phrases []model.Phrase
+				err = json.Unmarshal(bytes, &phrases)
+				if err != nil {
+					log.Println(err)
+					continue
+				}
+
+				// no pushed phrase
+				if len(phrases) < 1 {
+					continue
+				}
+
+				rand.Seed(time.Now().UnixNano())
+				randIndex := rand.Intn(len(phrases))
+				phrase := phrases[randIndex]
+
+				message := message.NewMessage(phrase.Author, phrase.Text)
+				err = message.Push(pushtime.UserID)
+				if err != nil {
+					log.Println(err)
+				}
+			}
 		},
 	}
 

@@ -15,7 +15,7 @@ type message struct {
 	Body  string `json:"body"`
 }
 
-func (msg *message) Push() error {
+func (msg *message) Push(userID string) error {
 	// server keypair
 	keypair, err := setting.GetKeypair()
 	if err != nil {
@@ -27,7 +27,7 @@ func (msg *message) Push() error {
 	defer db.Close()
 
 	var s model.Subscription
-	db.Where("user_id = ?", "whitebox").Last(&s)
+	db.Where("user_id = ?", userID).Last(&s)
 
 	// Decode subscription
 	sub := &webpush.Subscription{Endpoint: s.Endpoint, Keys: webpush.Keys{P256dh: s.P256dh, Auth: s.Auth}}
