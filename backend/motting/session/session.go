@@ -18,6 +18,10 @@ func NewSession(w http.ResponseWriter, r *http.Request, userID uint) error {
 	}
 
 	session.Values["userID"] = userID
+	session.Options.HttpOnly = true
+	// session.Options.Secure = true
+	// session.Options.SameSite = http.SameSiteStrictMode
+
 	return session.Save(r, w)
 }
 
