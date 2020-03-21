@@ -107,6 +107,7 @@ func TestSignUpHandler_Success(t *testing.T) {
 	assert.Equal(t, expected.Email, actual.Email)
 	assert.NotEqual(t, "", actual.Password)
 
+	// パスワードのハッシュが正しいこと
 	err := bcrypt.CompareHashAndPassword([]byte(actual.Password), []byte(expected.Password))
 	if err != nil {
 		t.Error(err)

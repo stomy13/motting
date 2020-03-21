@@ -7,6 +7,7 @@ import (
 
 	"github.com/MasatoTokuse/motting/motting/dbaccess"
 	"github.com/MasatoTokuse/motting/motting/model"
+	"github.com/MasatoTokuse/motting/motting/session"
 	"github.com/MasatoTokuse/motting/motting/util"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -32,7 +33,6 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	// setup DB
 	db := dbaccess.ConnectGorm()
 	defer db.Close()
-	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.User{})
 
 	// email is not already used?
 	var count int
@@ -56,7 +56,12 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	// Insert
 	db.Create(user)
 
-	// create session ID
-	// return session ID
+	// Create session
+	err = session.NewSession(w, r, user.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	fmt.Fprint(w, "ok")
 }
