@@ -18,13 +18,7 @@ func NewSession(w http.ResponseWriter, r *http.Request, userID uint) error {
 	}
 
 	session.Values["userID"] = userID
-
-	err = session.Save(r, w)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return session.Save(r, w)
 }
 
 func DeleteSession(w http.ResponseWriter, r *http.Request) error {
