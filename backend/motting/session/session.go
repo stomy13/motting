@@ -1,7 +1,6 @@
 package session
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/sessions"
@@ -19,7 +18,6 @@ func NewSession(w http.ResponseWriter, r *http.Request, userID uint) error {
 	}
 
 	session.Values["userID"] = userID
-	fmt.Println(session.Values["userID"])
 
 	err = session.Save(r, w)
 	if err != nil {
@@ -29,7 +27,18 @@ func NewSession(w http.ResponseWriter, r *http.Request, userID uint) error {
 	return nil
 }
 
-func GetUserID(w http.ResponseWriter, r *http.Request) (interface{}, error) {
+func DeleteSession(w http.ResponseWriter, r *http.Request) error {
+
+	session, err := store.Get(r, SessionName)
+	if err != nil {
+		return err
+	}
+
+	session.Options.MaxAge = -1
+	return session.Save(r, w)
+}
+
+func GetUserID(r *http.Request) (interface{}, error) {
 
 	session, err := store.Get(r, SessionName)
 	if err != nil {

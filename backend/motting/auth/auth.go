@@ -33,6 +33,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	// setup DB
 	db := dbaccess.ConnectGorm()
 	defer db.Close()
+	db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(&model.User{})
 
 	// email is not already used?
 	var count int
@@ -64,4 +65,54 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprint(w, "ok")
+}
+
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
+
+	// リクエストから値を受けとる
+	values, err := util.ParseBody(&r.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// setup DB
+	db := dbaccess.ConnectGorm()
+	defer db.Close()
+
+	// is email exists?
+	var user model.User
+	db.Model(&model.User{}).Where("email = ?", values.Get("email")).Find(&user)
+	if user.ID == 0 {
+		fmt.Fprint(w, "this email is not exists")
+		return
+	}
+
+	// Compare
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(values.Get("password")))
+	if err != nil {
+		fmt.Fprint(w, "Incorrect email or password")
+		return
+	}
+
+	// Create session
+	err = session.NewSession(w, r, user.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprint(w, "ok")
+
+}
+
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+
+	err := session.DeleteSession(w, r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprint(w, "ok")
+
 }

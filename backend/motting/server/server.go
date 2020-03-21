@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/MasatoTokuse/motting/motting/api"
+	"github.com/MasatoTokuse/motting/motting/auth"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 )
@@ -36,6 +37,10 @@ func NewHandler() *chi.Mux {
 
 		w.Write([]byte("Hello Golang"))
 	})
+
+	r.Post("/api/v1/signup", auth.SignUpHandler)
+	r.Post("/api/v1/login", auth.LoginHandler)
+	r.Delete("/api/v1/logout", auth.LogoutHandler)
 
 	const urlPushtime = "/api/v1/pushtime"
 	r.Get(urlPushtime, api.PushTimeGET)
