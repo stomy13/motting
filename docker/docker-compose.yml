@@ -3,19 +3,23 @@ version: '3'
 services:
   db:
     image: mysql:8.0.15
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --general-log=true
     ports: 
       - 33306:3306
     env_file:
       - ./mysql/mysql.env
     volumes:
-      - ./var/mysqldb:/var/lib/mysql
-      - ./mysql/my.cnf:/etc/mysql/my.cnf
+      - ./var/mysql/db/data:/var/lib/mysql
+      # - ./mysql/my.cnf:/etc/mysql/my.cnf
+      - ./mysql/conf.d/:/etc/mysql/conf.d
   db_test:
     image: mysql:8.0.15
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --general-log=true
     ports: 
       - 33333:3306
     env_file:
       - ./mysql/mysql.env
     volumes:
-      - ./var/mysqldb_test:/var/lib/mysql
-      - ./mysql/my.cnf:/etc/mysql/my.cnf
+      - ./var/mysql/db_test/data:/var/lib/mysql
+      # - ./mysql/my.cnf:/etc/mysql/my.cnf
+      - ./mysql/conf.d/:/etc/mysql/conf.d
