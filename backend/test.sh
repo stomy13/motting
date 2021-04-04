@@ -5,7 +5,7 @@ if [ -e .envrc ]; then
 fi
 
 pushd motting/api
-go test
+go test -v
 popd
 
 pushd motting/cmd
@@ -13,7 +13,7 @@ go test
 popd
 
 pushd motting/dbaccess
-go test
+go test -v
 popd
 
 pushd motting/model

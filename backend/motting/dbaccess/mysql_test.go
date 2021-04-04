@@ -14,8 +14,8 @@ type Test struct {
 // 疎通確認
 func Test_ConnectGorm_1(t *testing.T) {
 	conargs := &ConnectArgs{
-		Address:  "localhost",
-		Port:     "33333",
+		Address:  "motting-db-test",
+		Port:     "3306",
 		DBName:   "motting",
 		User:     "motting",
 		Password: "motting"}

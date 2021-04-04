@@ -6,8 +6,8 @@ import (
 
 func ConnectGormInTest() *gorm.DB {
 	conargs := &ConnectArgs{
-		Address:  "localhost",
-		Port:     "33333",
+		Address:  "motting-db-test",
+		Port:     "3306",
 		DBName:   "motting",
 		User:     "motting",
 		Password: "motting"}
