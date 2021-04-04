@@ -9,6 +9,8 @@ services:
         - INSTALL_NODE=true
         - NODE_VERSION=lts/*
     container_name: motting-app
+    ports: 
+      - 3001:3001
     volumes:
       - ../:/go/src
     working_dir: /go/src

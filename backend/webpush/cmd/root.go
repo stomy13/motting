@@ -103,7 +103,7 @@ func NewCmdRoot() *cobra.Command {
 	flags := cmd.PersistentFlags()
 	flags.StringVar(&port, "port", ":3002", "Listen port")
 	flags.StringVar(&dbServer, "db_server", "motting-db", "db server")
-	flags.StringVar(&dbPort, "db_port", "33306", "db port")
+	flags.StringVar(&dbPort, "db_port", "3306", "db port")
 	flags.StringVar(&dbSchema, "db_schema", "webpush", "db schema")
 	flags.StringVar(&dbLogin, "db_login", "webpush", "db login")
 	flags.StringVar(&dbPassword, "db_password", "webpush", "db password")
