@@ -17,18 +17,18 @@ services:
     tty: true
     stdin_open: true
     command: /bin/bash
-  # motting-db:
-  #   build:
-  #     context: ./docker/mysql
-  #     dockerfile: Dockerfile
-  #   command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --general-log=true
-  #   container_name: motting-db
-  #   ports:
-  #     - '3306:3306'
-  #   env_file:
-  #     - ./docker/mysql/mysql.env
-  #   volumes:
-  #     - ./var/mysql/db/data:/var/lib/mysql
+  motting-db:
+    build:
+      context: ./docker/mysql
+      dockerfile: Dockerfile
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --general-log=true
+    container_name: motting-db
+    ports:
+      - '3306:3306'
+    env_file:
+      - ./docker/mysql/mysql.env
+    volumes:
+      - ./var/mysql/db/data:/var/lib/mysql
   motting-db-test:
     build:
       context: ./docker/mysql
