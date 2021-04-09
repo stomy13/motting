@@ -3,7 +3,7 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [       
+    "configurations": [
         {
             "name": "Motting API",
             "type": "go",
@@ -22,7 +22,9 @@
             "program": "${workspaceFolder}/webpush",
             // "env": {
             // },
-            "args": ["auth"]
+            "args": [
+                "auth"
+            ]
         },
         {
             "name": "Webpush",
@@ -30,8 +32,9 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/webpush",
-            // "env": {
-            // },
+            "env": {
+                "TZ": "Asia/Tokyo",
+            },
             "args": []
         }
     ]
