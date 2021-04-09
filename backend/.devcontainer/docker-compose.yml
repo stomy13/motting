@@ -11,6 +11,7 @@ services:
     container_name: motting-app
     ports: 
       - 3001:3001
+      - 3002:3002
     volumes:
       - ../:/go/src
     working_dir: /go/src
