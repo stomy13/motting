@@ -102,11 +102,11 @@ func NewCmdRoot() *cobra.Command {
 
 	flags := cmd.PersistentFlags()
 	flags.StringVar(&port, "port", ":3002", "Listen port")
-	flags.StringVar(&dbServer, "db_server", "localhost", "db server")
-	flags.StringVar(&dbPort, "db_port", "33306", "db port")
+	flags.StringVar(&dbServer, "db_server", "motting-db", "db server")
+	flags.StringVar(&dbPort, "db_port", "3306", "db port")
 	flags.StringVar(&dbSchema, "db_schema", "webpush", "db schema")
-	flags.StringVar(&dbLogin, "db_login", "webpush", "db login")
-	flags.StringVar(&dbPassword, "db_password", "webpush", "db password")
+	flags.StringVar(&dbLogin, "db_login", "motting", "db login")
+	flags.StringVar(&dbPassword, "db_password", "motting", "db password")
 	flags.StringVar(&logpath, "log", "-", "log file path")
 
 	viper.SetEnvPrefix("PUSH")

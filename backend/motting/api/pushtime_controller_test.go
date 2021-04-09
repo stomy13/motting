@@ -19,8 +19,8 @@ const urlPushTime = "http://loclahost:3001/api/v1/pushtime/"
 
 func setup() {
 	conargs := &dbaccess.ConnectArgs{
-		Address:  "localhost",
-		Port:     "33333",
+		Address:  "motting-db-test",
+		Port:     "3306",
 		DBName:   "motting",
 		User:     "motting",
 		Password: "motting"}

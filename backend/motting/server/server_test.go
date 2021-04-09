@@ -13,7 +13,7 @@ func TestRunServer(t *testing.T) {
 
 	conargs := &dbaccess.ConnectArgs{
 		Address:  "localhost",
-		Port:     "33333",
+		Port:     "3306",
 		DBName:   "motting",
 		User:     "motting",
 		Password: "motting"}
