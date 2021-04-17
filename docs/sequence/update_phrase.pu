@@ -1,0 +1,12 @@
+@startuml update_phrase
+participant Browser as browser
+box "motting" #LightBlue
+participant mottingAPIServer as api
+participant mottingDataBase as apidb
+end box
+
+browser -> api: UpdatePhraseRequest
+api -> apidb:  UpdatePhrase
+apidb --> api: Result
+api --> browser:  UpdatePhraseResponse
+@enduml

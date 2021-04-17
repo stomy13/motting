@@ -1,0 +1,11 @@
+@startuml template
+participant Browser as browser
+box "motting" #LightBlue
+participant mottingAPIServer as api
+participant WebPushAPIServer as push
+participant mottingDataBase as apidb
+participant WebPushDataBase as pushdb
+participant WebPushBatch as batch
+end box
+participant GooglePushServer as google
+@enduml

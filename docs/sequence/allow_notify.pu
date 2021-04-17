@@ -1,0 +1,18 @@
+@startuml allow_notify
+participant Browser as browser
+box "motting" #LightBlue
+participant WebPushAPIServer as push
+participant WebPushDataBase as pushdb
+end box
+participant GooglePushServer as google
+
+' ブラウザで画面表示時に公開鍵をサーバーから取得する
+browser -> push: FetchPublickKeyRequest
+push --> browser:  PublicKey
+browser -> google: RegisterPublicKey
+google --> browser:  RegisterPublicKeyResponse
+browser -> push: AllowNotifyRequest
+push -> pushdb:  AllowNotify
+pushdb --> push: Result
+push --> browser:  AllowNotifyResponse
+@enduml

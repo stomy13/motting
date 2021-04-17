@@ -1,0 +1,12 @@
+@startuml register_user
+participant Browser as browser
+box "motting" #LightBlue
+participant mottingAPIServer as api
+participant mottingDataBase as apidb
+end box
+
+browser -> api: RegisterUserRequest
+api -> apidb: RegisterUser
+apidb --> api: Result
+api --> browser: RegisterUserResponse
+@enduml
