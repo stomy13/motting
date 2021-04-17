@@ -1,4 +1,4 @@
-@startuml
+@startuml notify_phrase
 participant Browser as browser
 box "motting" #LightBlue
 participant mottingAPIServer as api
