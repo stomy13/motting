@@ -1,4 +1,3 @@
-```uml
 @startuml register_user
 participant Browser
 box "motting" #LightBlue
@@ -15,4 +14,3 @@ api -> apidb: RegisterUser
 apidb --> api: Result
 api --> Browser: RegisterUserResponse
 @enduml
-```
