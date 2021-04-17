@@ -1,0 +1,12 @@
+@startuml list_phrase
+participant Browser
+box "motting" #LightBlue
+participant mottingAPIServer as api
+participant mottingDataBase as apidb
+end box
+
+Browser -> api: ListPhraseRequest
+api -> apidb:  ListPhrase
+apidb --> api: Result
+api --> Browser:  ListPhraseResponse
+@enduml
