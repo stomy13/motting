@@ -1,0 +1,17 @@
+@startuml login
+participant Browser
+box "motting" #LightBlue
+participant mottingAPIServer as api
+participant mottingDataBase as apidb
+end box
+
+/'
+TODO:認証及びセッション管理は今後検討する
+↓構想図
+https://drive.google.com/file/d/1lyd-fZWlI13jor_3-Kw_9Nf8rg3jaW39/view?usp=sharing
+'/
+Browser -> api: LoginRequest
+api -> apidb: Login
+apidb --> api: Result
+api --> Browser: LoginResponse
+@enduml
