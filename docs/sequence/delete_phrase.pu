@@ -1,12 +1,12 @@
 @startuml delete_phrase
-participant Browser
+participant Browser as browser
 box "motting" #LightBlue
 participant mottingAPIServer as api
 participant mottingDataBase as apidb
 end box
 
-Browser -> api: DeletePhraseRequest
+browser -> api: DeletePhraseRequest
 api -> apidb:  DeletePhrase
 apidb --> api: Result
-api --> Browser:  DeletePhraseResponse
+api --> browser:  DeletePhraseResponse
 @enduml

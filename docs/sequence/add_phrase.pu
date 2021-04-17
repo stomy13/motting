@@ -1,12 +1,12 @@
 @startuml add_phrase
-participant Browser
+participant Browser as browser
 box "motting" #LightBlue
 participant mottingAPIServer as api
 participant mottingDataBase as apidb
 end box
 
-Browser -> api: AddPhraseRequest
+browser -> api: AddPhraseRequest
 api -> apidb:  AddPhrase
 apidb --> api: Result
-api --> Browser:  AddPhraseResponse
+api --> browser:  AddPhraseResponse
 @enduml

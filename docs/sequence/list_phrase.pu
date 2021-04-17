@@ -1,12 +1,12 @@
 @startuml list_phrase
-participant Browser
+participant Browser as browser
 box "motting" #LightBlue
 participant mottingAPIServer as api
 participant mottingDataBase as apidb
 end box
 
-Browser -> api: ListPhraseRequest
+browser -> api: ListPhraseRequest
 api -> apidb:  ListPhrase
 apidb --> api: Result
-api --> Browser:  ListPhraseResponse
+api --> browser:  ListPhraseResponse
 @enduml

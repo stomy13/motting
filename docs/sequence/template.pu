@@ -1,5 +1,5 @@
 @startuml template
-participant Browser
+participant Browser as browser
 box "motting" #LightBlue
 participant mottingAPIServer as api
 participant WebPushAPIServer as push

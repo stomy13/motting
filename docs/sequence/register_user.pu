@@ -1,12 +1,12 @@
 @startuml register_user
-participant Browser
+participant Browser as browser
 box "motting" #LightBlue
 participant mottingAPIServer as api
 participant mottingDataBase as apidb
 end box
 
-Browser -> api: RegisterUserRequest
+browser -> api: RegisterUserRequest
 api -> apidb: RegisterUser
 apidb --> api: Result
-api --> Browser: RegisterUserResponse
+api --> browser: RegisterUserResponse
 @enduml

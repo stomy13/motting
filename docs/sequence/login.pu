@@ -1,5 +1,5 @@
 @startuml login
-participant Browser
+participant Browser as browser
 box "motting" #LightBlue
 participant mottingAPIServer as api
 participant mottingDataBase as apidb
@@ -10,8 +10,8 @@ TODO:認証及びセッション管理は今後検討する
 ↓構想図
 https://drive.google.com/file/d/1lyd-fZWlI13jor_3-Kw_9Nf8rg3jaW39/view?usp=sharing
 '/
-Browser -> api: LoginRequest
+browser -> api: LoginRequest
 api -> apidb: Login
 apidb --> api: Result
-api --> Browser: LoginResponse
+api --> browser: LoginResponse
 @enduml
