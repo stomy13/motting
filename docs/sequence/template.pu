@@ -7,5 +7,5 @@ participant mottingDataBase as apidb
 participant WebPushDataBase as pushdb
 participant WebPushBatch as batch
 end box
-participant GooglePushServer
+participant GooglePushServer as google
 @enduml
