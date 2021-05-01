@@ -1,6 +1,8 @@
 package witticism
 
 import (
+	"errors"
+
 	"github.com/MasatoTokuse/motting/motting/domain/user"
 	"github.com/google/uuid"
 )
@@ -43,6 +45,19 @@ func (witticismId *WitticismId) valid() error {
 
 // TellerName 名言の発案者名。誰が言ったか
 type TellerName string
+
+func NewTellerName(newTellerName string) (*TellerName, error) {
+	tellerName := TellerName(newTellerName)
+	return &tellerName, tellerName.valid()
+}
+
+// 1文字以上であることの確認
+func (newTellerName *TellerName) valid() error {
+	if len(string(*newTellerName)) <= 0 {
+		return errors.New("tellername must not be empty.")
+	}
+	return nil
+}
 
 // Sentence 名言の内容。何を言ったか
 type Sentence string

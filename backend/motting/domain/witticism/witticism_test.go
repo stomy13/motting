@@ -17,3 +17,15 @@ func Test_NewWitticismId_IsUuid(t *testing.T) {
 	_, err := NewWitticismId()
 	assert.Nil(t, err)
 }
+
+// TellerNameが1文字以上で生成できること
+func Test_NewTellerName_IsNotEmpty(t *testing.T) {
+	_, err := NewTellerName("t")
+	assert.Nil(t, err)
+}
+
+// TellerNameが0文字で生成できないこと
+func Test_NewTellerName_IsNotCreatableInstance(t *testing.T) {
+	_, err := NewTellerName("")
+	assert.NotNil(t, err)
+}
