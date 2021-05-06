@@ -9,10 +9,10 @@ import (
 
 // Witticism 名言。より良い人生をつくるための言葉
 type Witticism struct {
-	id         *WitticismId
-	tellerName *TellerName
-	sentence   *Sentence
-	ownerId    *user.UserId
+	Id         *WitticismId
+	TellerName *TellerName
+	Sentence   *Sentence
+	OwnerId    *user.UserId
 }
 
 func NewWitticism(
@@ -22,10 +22,10 @@ func NewWitticism(
 ) *Witticism {
 	witticismId, _ := NewWitticismId()
 	return &Witticism{
-		id:         witticismId,
-		tellerName: &tellerName,
-		sentence:   &sentence,
-		ownerId:    &ownerId,
+		Id:         witticismId,
+		TellerName: &tellerName,
+		Sentence:   &sentence,
+		OwnerId:    &ownerId,
 	}
 }
 
