@@ -29,3 +29,15 @@ func Test_NewTellerName_IsNotCreatableInstance(t *testing.T) {
 	_, err := NewTellerName("")
 	assert.NotNil(t, err)
 }
+
+// Sentenceが1文字以上で生成できること
+func Test_NewSentence__IsNotEmpty(t *testing.T) {
+	_, err := NewSentence("t")
+	assert.Nil(t, err)
+}
+
+// Sentenceが0文字で生成できないこと
+func Test_NewSentence_IsNotCreatableInstance(t *testing.T) {
+	_, err := NewSentence("")
+	assert.NotNil(t, err)
+}

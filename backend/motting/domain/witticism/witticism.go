@@ -61,3 +61,16 @@ func (newTellerName *TellerName) valid() error {
 
 // Sentence 名言の内容。何を言ったか
 type Sentence string
+
+func NewSentence(newSentence string) (*Sentence, error) {
+	sentence := Sentence(newSentence)
+	return &sentence, sentence.valid()
+}
+
+// 1文字以上であることの確認
+func (newSentence *Sentence) valid() error {
+	if len(string(*newSentence)) <= 0 {
+		return errors.New("sentence must not be empty.")
+	}
+	return nil
+}
