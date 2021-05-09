@@ -16,17 +16,17 @@ type Witticism struct {
 }
 
 func NewWitticism(
-	tellerName TellerName,
-	sentence Sentence,
-	ownerId user.UserId,
-) *Witticism {
-	witticismId, _ := NewWitticismId()
+	tellerName *TellerName,
+	sentence *Sentence,
+	ownerId *user.UserId,
+) (*Witticism, error) {
+	witticismId, err := NewWitticismId()
 	return &Witticism{
 		Id:         witticismId,
-		TellerName: &tellerName,
-		Sentence:   &sentence,
-		OwnerId:    &ownerId,
-	}
+		TellerName: tellerName,
+		Sentence:   sentence,
+		OwnerId:    ownerId,
+	}, err
 }
 
 // WitticismId 名言のID。このドメインのID
