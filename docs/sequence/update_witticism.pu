@@ -1,12 +1,12 @@
-@startuml delete_phrase
+@startuml update_witticism
 participant Browser as browser
 box "motting" #LightBlue
 participant mottingAPIServer as api
 participant mottingDataBase as apidb
 end box
 
-browser -> api: DeletePhraseRequest
-api -> apidb:  DeletePhrase
+browser -> api: UpdateWitticismRequest
+api -> apidb:  UpdateWitticism
 apidb --> api: Result
-api --> browser:  DeletePhraseResponse
+api --> browser:  UpdateWitticismResponse
 @enduml
