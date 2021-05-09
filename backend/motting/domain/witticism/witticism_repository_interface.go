@@ -1,11 +1,8 @@
 package witticism
 
-import (
-	"github.com/MasatoTokuse/motting/motting/domain/user"
-)
-
 type WitticismRepositoryInterface interface {
-	allWitticism(userId *user.UserId)
-	save(witticism *Witticism)
-	delete(witticismId *WitticismId)
+	// TODO:後で実装する
+	// AllWitticism(userId *user.UserId) error
+	Save(witticism *Witticism) error
+	// Delete(witticismId *WitticismId) error
 }
