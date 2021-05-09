@@ -8,18 +8,20 @@ import (
 
 type WitticismModel struct {
 	abstract.Model
-	tellerName string
-	sentence   string
-	ownerId    string
+	TellerName string
+	Sentence   string
+	OwnerId    string
 }
 
 // TODO: created_at に値が入力されないなら自前で設定する
-// TODO: フォーマット適用
-func createWitticismModel(witticism *witticism.Witticism) WitticismModel {
+func createWitticismModel(witticism *witticism.Witticism) *WitticismModel {
 	model := WitticismModel{
-		tellerName: string(*witticism.TellerName), sentence: string(*witticism.Sentence), ownerId: string(*witticism.OwnerId)}
+		TellerName: string(*witticism.TellerName),
+		Sentence:   string(*witticism.Sentence),
+		OwnerId:    string(*witticism.OwnerId),
+	}
 	model.ID = string(*witticism.Id)
-	return model
+	return &model
 }
 
 type WitticismRepository struct {

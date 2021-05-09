@@ -6,16 +6,16 @@ CREATE TABLE IF NOT EXISTS motting.users (
     PRIMARY KEY(id)
 );
 
-CREATE TABLE motting.phrases (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE motting.witticisms (
+  `id` varchar(32) NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
-  `user_id` varchar(24) DEFAULT NULL,
-  `text` varchar(128) DEFAULT NULL,
-  `author` varchar(24) DEFAULT NULL,
+  `owner_id` varchar(24) DEFAULT NULL,
+  `sentence` varchar(128) DEFAULT NULL,
+  `teller_name` varchar(24) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_phrases_deleted_at` (`deleted_at`)
+  KEY `idx_witticisms_deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE motting.push_times (
