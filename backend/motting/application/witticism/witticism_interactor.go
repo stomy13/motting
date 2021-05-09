@@ -17,6 +17,5 @@ func (interractor *WitticismUsecaseInteractor) AddWitticism(command *AddWitticis
 	if err != nil {
 		return err
 	}
-	interractor.WitticismRepository.Save(witticism)
-	return nil
+	return interractor.WitticismRepository.Save(witticism)
 }
