@@ -3,12 +3,17 @@ package witticism
 import (
 	"testing"
 
+	"github.com/MasatoTokuse/motting/motting/domain/user"
 	"github.com/stretchr/testify/assert"
 )
 
 // インスタンスが生成できることの確認
 func Test_NewWitticism_IsCreatableInstance(t *testing.T) {
-	witticism := NewWitticism("tellerName", "sentence", "owner")
+	tellerName, _ := NewTellerName("tellerName")
+	sentence, _ := NewSentence("sentence")
+	ownerId := user.UserId("ownerId")
+	witticism, err := NewWitticism(tellerName, sentence, &ownerId)
+	assert.Nil(t, err)
 	assert.NotNil(t, witticism)
 }
 
