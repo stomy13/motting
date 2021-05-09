@@ -1,12 +1,12 @@
-@startuml add_phrase
+@startuml add_witticism
 participant Browser as browser
 box "motting" #LightBlue
 participant mottingAPIServer as api
 participant mottingDataBase as apidb
 end box
 
-browser -> api: AddPhraseRequest
-api -> apidb:  AddPhrase
+browser -> api: AddWitticismRequest
+api -> apidb:  AddWitticism
 apidb --> api: Result
-api --> browser:  AddPhraseResponse
+api --> browser:  AddWitticismResponse
 @enduml
