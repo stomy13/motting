@@ -26,8 +26,8 @@ type WitticismRepository struct {
 	db *gorm.DB
 }
 
-func NewWitticismRepository(db *gorm.DB) WitticismRepository {
-	return WitticismRepository{db: db}
+func NewWitticismRepository(db *gorm.DB) witticism.WitticismRepositoryInterface {
+	return &WitticismRepository{db: db}
 }
 
 func (witticismRepository *WitticismRepository) Save(witticism *witticism.Witticism) error {
