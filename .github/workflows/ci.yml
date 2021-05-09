@@ -22,8 +22,8 @@ jobs:
       - run: go version
       - name: Get dependencies
         run: go get -v -t -d ./...
-      - run: mysql -h mysql-test -u root -p root < ./devcontainer/docker/mysql/initialize.sql
-      - run: mysql -h mysql-test -u root -p root < ./devcontainer/docker/mysql/inittable.sql
+      - run: mysql -h mysql-test -u root -p root < ./.devcontainer/docker/mysql/initialize.sql
+      - run: mysql -h mysql-test -u root -p root < ./.devcontainer/docker/mysql/inittable.sql
       - run: go test -v ./...
       - name: Discord notification by failure test
         if: ${{ failure() }}
