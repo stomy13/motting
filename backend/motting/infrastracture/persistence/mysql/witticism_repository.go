@@ -13,6 +13,10 @@ type WitticismModel struct {
 	OwnerId    string
 }
 
+func (WitticismModel) TableName() string {
+	return "witticisms"
+}
+
 // TODO: created_at に値が入力されないなら自前で設定する
 func createWitticismModel(witticism *witticism.Witticism) *WitticismModel {
 	model := WitticismModel{

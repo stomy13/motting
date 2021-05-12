@@ -1,21 +1,16 @@
 package mysql
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/MasatoTokuse/motting/motting/domain/user"
 	"github.com/MasatoTokuse/motting/motting/domain/witticism"
+	"github.com/MasatoTokuse/motting/motting/test_helper"
 	"github.com/stretchr/testify/assert"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 )
 
 func Test_NewWitticismRepository(t *testing.T) {
-	connectTemplate := "%s:%s@tcp(%s:%s)/%s?parseTime=true"
-	defaultConnectString := fmt.Sprintf(connectTemplate, "motting", "motting", "motting-db-test", "3306", "motting")
-	db, err := gorm.Open(mysql.Open(defaultConnectString), &gorm.Config{})
-	assert.Nil(t, err)
+	db := test_helper.GetConnection()
 
 	repository := NewWitticismRepository(db)
 
@@ -24,5 +19,6 @@ func Test_NewWitticismRepository(t *testing.T) {
 	ownerId := user.UserId("ownerId")
 	witticism, _ := witticism.NewWitticism(tellerName, sentence, &ownerId)
 
-	repository.Save(witticism)
+	err := repository.Save(witticism)
+	assert.Nil(t, err)
 }

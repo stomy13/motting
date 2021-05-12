@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS motting.users (
 );
 
 CREATE TABLE motting.witticisms (
-  `id` varchar(32) NOT NULL,
+  `id` varchar(36) NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,

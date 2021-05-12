@@ -6,14 +6,19 @@ jobs:
       run:
         working-directory: ./backend
     runs-on: ubuntu-latest
+    env:
+      TEST_DB_HOST: 127.0.0.1
     services:
-      mysql-test:
-        image: mysql
+      motting-db-test:
+        image: mysql:8.0.15
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: motting
           MYSQL_USER: motting
           MYSQL_PASSWORD: motting
+        ports:
+          - 3306:3306
+        options: --health-cmd "mysqladmin ping -h localhost" --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
@@ -22,8 +27,8 @@ jobs:
       - run: go version
       - name: Get dependencies
         run: go get -v -t -d ./...
-      - run: mysql -h mysql-test -u root -p root < ./.devcontainer/docker/mysql/initialize.sql
-      - run: mysql -h mysql-test -u root -p root < ./.devcontainer/docker/mysql/inittable.sql
+      - run: mysql -h $TEST_DB_HOST --port 3306 -u root -proot < ./.devcontainer/docker/mysql/initialize.sql
+      - run: mysql -h $TEST_DB_HOST --port 3306 -u root -proot < ./.devcontainer/docker/mysql/inittable.sql
       - run: go test -v ./...
       - name: Discord notification by failure test
         if: ${{ failure() }}

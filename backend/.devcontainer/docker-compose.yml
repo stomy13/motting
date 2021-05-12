@@ -12,6 +12,8 @@ services:
     ports: 
       - 3001:3001
       - 3002:3002
+    env_file:
+      - ./docker/golang/golang.env
     volumes:
       - ../:/go/src
     working_dir: /go/src
