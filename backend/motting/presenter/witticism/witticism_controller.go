@@ -31,6 +31,8 @@ func (controller *WitticismController) AddWitticism(response http.ResponseWriter
 	var addWitticismCommand witticism.AddWitticismCommand
 	err = internal.UnmarshalJson(request.Body, &addWitticismCommand)
 	if err != nil {
+		response.WriteHeader(400)
+		// encoder := json.NewEncoder(response)
 		return
 	}
 	err = controller.WitticismUsecase.AddWitticism(&addWitticismCommand)

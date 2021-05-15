@@ -3,23 +3,24 @@ package witticism
 import (
 	"github.com/MasatoTokuse/motting/motting/domain/user"
 	"github.com/MasatoTokuse/motting/motting/domain/witticism"
+	"github.com/MasatoTokuse/motting/motting/error_response"
 )
 
 func createWitticism(command *AddWitticismCommand) (*witticism.Witticism, error) {
+	errorResponse := error_response.NewError()
 	tellerName, err := witticism.NewTellerName(command.TellerName)
-	if err != nil {
-		return nil, err
-	}
+	errorResponse.Append("tellerName", err)
 
 	sentence, err := witticism.NewSentence(command.Sentence)
-	if err != nil {
-		return nil, err
-	}
+	errorResponse.Append("sentence", err)
+
 	userId := user.UserId(command.OwnerId)
 
-	return witticism.NewWitticism(
+	witticism, err := witticism.NewWitticism(
 		tellerName,
 		sentence,
 		&userId,
 	)
+	errorResponse.Append("witticism", err)
+	return witticism, err
 }
