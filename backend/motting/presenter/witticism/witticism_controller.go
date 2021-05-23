@@ -21,6 +21,9 @@ func NewWitticismController(witticismUsecase witticism.WitticismUsecaseInterface
 func (controller *WitticismController) AddWitticism(response http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
+		// UnmarshalJsonのエラー判定
+		// バリデーションのエラー判定 ValidateErrorsかどうかで判定
+		// DBエラー判定
 		if err == nil {
 			fmt.Fprint(response, "OK")
 		} else {
@@ -31,7 +34,7 @@ func (controller *WitticismController) AddWitticism(response http.ResponseWriter
 	var addWitticismCommand witticism.AddWitticismCommand
 	err = internal.UnmarshalJson(request.Body, &addWitticismCommand)
 	if err != nil {
-		response.WriteHeader(400)
+		// response.WriteHeader(400)
 		// encoder := json.NewEncoder(response)
 		return
 	}
