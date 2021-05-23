@@ -1,35 +1,33 @@
 package error_response
 
-type ErrorResponse struct {
-	statusCode int
-	message    string
-	errors     []ValidateError
+type ValidateErrors struct {
+	// トップレベルのエラーメッセージ
+	message string
+	// 複数の項目のエラーを返却するために使用する
+	errors []ValidateError
 }
 
-func NewError() *ErrorResponse {
-	return &ErrorResponse{}
+func NewValidateErrors() *ValidateErrors {
+	return &ValidateErrors{}
 }
 
-func (errorResponse *ErrorResponse) Append(filedName string, err error) {
+func (error *ValidateErrors) Append(filedName string, err error) {
 	if err != nil {
 		validateError := ValidateError{filedName: filedName, message: err.Error()}
-		errorResponse.errors = append(errorResponse.errors, validateError)
+		error.errors = append(error.errors, validateError)
 	}
 }
 
-func (errorResponse *ErrorResponse) hasError() bool {
-	return errorResponse.errors != nil
+func (error *ValidateErrors) HasError() bool {
+	return error.errors != nil
 }
 
-func (errorResponse *ErrorResponse) Error() string {
-	return errorResponse.message
+func (error *ValidateErrors) Error() string {
+	return error.message
 }
 
+// 1項目に対するバリデーションエラー
 type ValidateError struct {
 	filedName string
 	message   string
-}
-
-type TestError struct {
-	ErrorResponse
 }

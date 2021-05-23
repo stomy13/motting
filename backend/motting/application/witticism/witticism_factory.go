@@ -7,12 +7,12 @@ import (
 )
 
 func createWitticism(command *AddWitticismCommand) (*witticism.Witticism, error) {
-	errorResponse := error_response.NewError()
+	validateErrors := error_response.NewValidateErrors()
 	tellerName, err := witticism.NewTellerName(command.TellerName)
-	errorResponse.Append("tellerName", err)
+	validateErrors.Append("tellerName", err)
 
 	sentence, err := witticism.NewSentence(command.Sentence)
-	errorResponse.Append("sentence", err)
+	validateErrors.Append("sentence", err)
 
 	userId := user.UserId(command.OwnerId)
 
@@ -21,6 +21,9 @@ func createWitticism(command *AddWitticismCommand) (*witticism.Witticism, error)
 		sentence,
 		&userId,
 	)
-	errorResponse.Append("witticism", err)
-	return witticism, err
+	validateErrors.Append("witticism", err)
+	if validateErrors.HasError() {
+		return nil, validateErrors
+	}
+	return witticism, nil
 }
