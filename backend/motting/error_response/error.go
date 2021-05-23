@@ -2,32 +2,32 @@ package error_response
 
 type ValidateErrors struct {
 	// トップレベルのエラーメッセージ
-	message string
+	Message string `json:"message"`
 	// 複数の項目のエラーを返却するために使用する
-	errors []ValidateError
+	Errors []ValidateError `json:"errors"`
 }
 
 func NewValidateErrors() *ValidateErrors {
-	return &ValidateErrors{}
+	return &ValidateErrors{Message: "入力項目にエラーがあります。"}
 }
 
 func (validateErrors *ValidateErrors) Append(filedName string, err error) {
 	if err != nil {
-		validateError := ValidateError{filedName: filedName, message: err.Error()}
-		validateErrors.errors = append(validateErrors.errors, validateError)
+		validateError := ValidateError{FiledName: filedName, Message: err.Error()}
+		validateErrors.Errors = append(validateErrors.Errors, validateError)
 	}
 }
 
 func (validateErrors *ValidateErrors) HasError() bool {
-	return validateErrors.errors != nil
+	return validateErrors.Errors != nil
 }
 
 func (validateErrors *ValidateErrors) Error() string {
-	return validateErrors.message
+	return validateErrors.Message
 }
 
 // 1項目に対するバリデーションエラー
 type ValidateError struct {
-	filedName string
-	message   string
+	FiledName string `json:"filedName"`
+	Message   string `json:"message"`
 }

@@ -1,16 +1,16 @@
 package mysql
 
 type DBError struct {
-	err error
+	Message string `json:"message"`
 }
 
 func NewDBErrorIfNotNil(err error) error {
 	if err == nil {
 		return nil
 	}
-	return &DBError{err: err}
+	return &DBError{Message: err.Error()}
 }
 
 func (DBError *DBError) Error() string {
-	return DBError.err.Error()
+	return DBError.Message
 }

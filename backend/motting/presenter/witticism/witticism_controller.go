@@ -1,7 +1,6 @@
 package witticism
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/MasatoTokuse/motting/motting/application/witticism"
@@ -21,21 +20,12 @@ func NewWitticismController(witticismUsecase witticism.WitticismUsecaseInterface
 func (controller *WitticismController) AddWitticism(response http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
-		// UnmarshalJsonのエラー判定
-		// バリデーションのエラー判定 ValidateErrorsかどうかで判定
-		// DBエラー判定
-		if err == nil {
-			fmt.Fprint(response, "OK")
-		} else {
-			fmt.Fprint(response, "NG")
-		}
+		internal.Dispatch(err, response)
 	}()
 
 	var addWitticismCommand witticism.AddWitticismCommand
 	err = internal.UnmarshalJson(request.Body, &addWitticismCommand)
 	if err != nil {
-		// response.WriteHeader(400)
-		// encoder := json.NewEncoder(response)
 		return
 	}
 	err = controller.WitticismUsecase.AddWitticism(&addWitticismCommand)

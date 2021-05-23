@@ -19,13 +19,13 @@ func UnmarshalJson(body io.Reader, v interface{}) error {
 }
 
 type UnmarshalJsonError struct {
-	err error
+	Message string `json:"message"`
 }
 
 func NewUnmarshalJsonError(err error) error {
-	return &UnmarshalJsonError{err: err}
+	return &UnmarshalJsonError{Message: err.Error()}
 }
 
 func (unmarshalJsonError *UnmarshalJsonError) Error() string {
-	return unmarshalJsonError.err.Error()
+	return unmarshalJsonError.Message
 }
