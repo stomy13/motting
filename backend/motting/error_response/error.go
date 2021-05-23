@@ -11,19 +11,19 @@ func NewValidateErrors() *ValidateErrors {
 	return &ValidateErrors{}
 }
 
-func (error *ValidateErrors) Append(filedName string, err error) {
+func (validateErrors *ValidateErrors) Append(filedName string, err error) {
 	if err != nil {
 		validateError := ValidateError{filedName: filedName, message: err.Error()}
-		error.errors = append(error.errors, validateError)
+		validateErrors.errors = append(validateErrors.errors, validateError)
 	}
 }
 
-func (error *ValidateErrors) HasError() bool {
-	return error.errors != nil
+func (validateErrors *ValidateErrors) HasError() bool {
+	return validateErrors.errors != nil
 }
 
-func (error *ValidateErrors) Error() string {
-	return error.message
+func (validateErrors *ValidateErrors) Error() string {
+	return validateErrors.message
 }
 
 // 1項目に対するバリデーションエラー
