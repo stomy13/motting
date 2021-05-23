@@ -39,5 +39,5 @@ func NewWitticismRepository(db *gorm.DB) witticism.WitticismRepositoryInterface 
 func (witticismRepository *WitticismRepository) Save(witticism *witticism.Witticism) error {
 	model := createWitticismModel(witticism)
 	result := witticismRepository.db.Create(model)
-	return result.Error
+	return NewDBErrorIfNotNil(result.Error)
 }
