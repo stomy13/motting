@@ -5,6 +5,7 @@ import (
 
 	"github.com/MasatoTokuse/motting/motting/infrastracture/persistence/mysql"
 	"github.com/MasatoTokuse/motting/motting/test_helper"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_NewWitticismUsecaseInteractor(t *testing.T) {
@@ -13,5 +14,6 @@ func Test_NewWitticismUsecaseInteractor(t *testing.T) {
 	interactor := NewWitticismUsecaseInteractor(repository)
 
 	command := AddWitticismCommand{TellerName: "tellerName", Sentence: "sentence", OwnerId: "ownerId"}
-	interactor.AddWitticism(&command)
+	err := interactor.AddWitticism(&command)
+	assert.Nil(t, err)
 }
