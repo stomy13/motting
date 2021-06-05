@@ -17,11 +17,12 @@ type server struct {
 }
 
 func NewServer(port string, connection *gorm.DB) *server {
-	// TODO: コントローラーの生成とハンドラーマッピング
-	return &server{port: port, handler: NewHandler()}
+	return &server{port: port, handler: NewHandler(connection)}
 }
 
-func NewHandler() *chi.Mux {
+func NewHandler(connection *gorm.DB) *chi.Mux {
+	var compornents = NewCompornents(connection)
+
 	router := chi.NewRouter()
 
 	cors := cors.New(cors.Options{
