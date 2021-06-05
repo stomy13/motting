@@ -1,7 +1,21 @@
 name: golang-ci
 on: [push]
 jobs:
+  build:
+    defaults:
+      run:
+        working-directory: ./backend/motting
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.16.3'
+      - name: Get dependencies
+        run: go get -v -t -d ./...
+      - name: Build
+        run: go build
   test:
+    needs: build
     defaults:
       run:
         working-directory: ./backend
@@ -30,8 +44,13 @@ jobs:
       - run: mysql -h $TEST_DB_HOST --port 3306 -u root -proot < ./.devcontainer/docker/mysql/initialize.sql
       - run: mysql -h $TEST_DB_HOST --port 3306 -u root -proot < ./.devcontainer/docker/mysql/inittable.sql
       - run: go test -v ./...
-      - name: Discord notification by failure test
-        if: ${{ failure() }}
+  notify:
+    if: ${{ always() }}
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord notification by failure jobs
+        if: ${{ needs.build.result == 'failure' || needs.test.result == 'failure' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_USERNAME: 'Github Bot'
