@@ -21,7 +21,7 @@ func NewServer(port string, connection *gorm.DB) *server {
 }
 
 func NewHandler(connection *gorm.DB) *chi.Mux {
-	var compornents = NewCompornents(connection)
+	compornents := NewCompornents(connection)
 
 	router := chi.NewRouter()
 
@@ -35,8 +35,8 @@ func NewHandler(connection *gorm.DB) *chi.Mux {
 	})
 	router.Use(cors.Handler)
 
-	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello Motting!"))
+	router.Post("/witticism", func(response http.ResponseWriter, request *http.Request) {
+		compornents.WitticismContoroller.AddWitticism(response, request)
 	})
 
 	return router
