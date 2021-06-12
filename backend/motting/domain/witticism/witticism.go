@@ -42,7 +42,37 @@ func NewWitticism(
 		Sentence:   sentence,
 		OwnerId:    ownerId,
 	}, nil
+}
 
+func NewWitticismWithUUID(
+	id string,
+	tellerNameStr string,
+	sentenceStr string,
+	ownerIdStr string,
+) (*Witticism, error) {
+	validateErrors := error_response.NewValidateErrors()
+
+	witticismId, err := NewWitticismIdFromString(id)
+	validateErrors.Append("witticismId", err)
+
+	tellerName, err := NewTellerName(tellerNameStr)
+	validateErrors.Append("tellerName", err)
+
+	sentence, err := NewSentence(sentenceStr)
+	validateErrors.Append("sentence", err)
+
+	ownerId := user.UserId(ownerIdStr)
+
+	if validateErrors.HasError() {
+		return nil, validateErrors
+	}
+
+	return &Witticism{
+		Id:         witticismId,
+		TellerName: tellerName,
+		Sentence:   sentence,
+		OwnerId:    &ownerId,
+	}, nil
 }
 
 // WitticismId 名言のID。このドメインのID
@@ -50,6 +80,11 @@ type WitticismId string
 
 func NewWitticismId() (*WitticismId, error) {
 	witticism := WitticismId(uuid.NewString())
+	return &witticism, witticism.valid()
+}
+
+func NewWitticismIdFromString(id string) (*WitticismId, error) {
+	witticism := WitticismId(id)
 	return &witticism, witticism.valid()
 }
 

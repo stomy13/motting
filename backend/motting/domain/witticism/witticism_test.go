@@ -15,6 +15,13 @@ func Test_NewWitticism_IsCreatableInstance(t *testing.T) {
 	assert.NotNil(t, witticism)
 }
 
+// UUIDを使ってインスタンスが生成できることの確認
+func Test_NewWitticism_IsCreatableInstance_WithUUID(t *testing.T) {
+	witticism, err := NewWitticismWithUUID("026d51fb-b6fa-44c2-8137-dc7848b7dc7f", "tellerName", "sentence", "ownerId")
+	assert.Nil(t, err)
+	assert.NotNil(t, witticism)
+}
+
 // WitticismIdがUUIDで生成できること
 func Test_NewWitticismId_IsUuid(t *testing.T) {
 	_, err := NewWitticismId()
