@@ -9,10 +9,8 @@ import (
 
 // インスタンスが生成できることの確認
 func Test_NewWitticism_IsCreatableInstance(t *testing.T) {
-	tellerName, _ := NewTellerName("tellerName")
-	sentence, _ := NewSentence("sentence")
 	ownerId := user.UserId("ownerId")
-	witticism, err := NewWitticism(tellerName, sentence, &ownerId)
+	witticism, err := NewWitticism("tellerName", "sentence", &ownerId)
 	assert.Nil(t, err)
 	assert.NotNil(t, witticism)
 }

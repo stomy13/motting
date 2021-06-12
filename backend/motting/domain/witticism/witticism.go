@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/MasatoTokuse/motting/motting/domain/user"
+	"github.com/MasatoTokuse/motting/motting/error_response"
 	"github.com/google/uuid"
 )
 
@@ -16,17 +17,32 @@ type Witticism struct {
 }
 
 func NewWitticism(
-	tellerName *TellerName,
-	sentence *Sentence,
+	tellerNameStr string,
+	sentenceStr string,
 	ownerId *user.UserId,
 ) (*Witticism, error) {
+	validateErrors := error_response.NewValidateErrors()
+
 	witticismId, err := NewWitticismId()
+	validateErrors.Append("witticismId", err)
+
+	tellerName, err := NewTellerName(tellerNameStr)
+	validateErrors.Append("tellerName", err)
+
+	sentence, err := NewSentence(sentenceStr)
+	validateErrors.Append("sentence", err)
+
+	if validateErrors.HasError() {
+		return nil, validateErrors
+	}
+
 	return &Witticism{
 		Id:         witticismId,
 		TellerName: tellerName,
 		Sentence:   sentence,
 		OwnerId:    ownerId,
-	}, err
+	}, nil
+
 }
 
 // WitticismId 名言のID。このドメインのID

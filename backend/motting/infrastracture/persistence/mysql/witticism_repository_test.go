@@ -14,10 +14,8 @@ func Test_NewWitticismRepository(t *testing.T) {
 
 	repository := NewWitticismRepository(db)
 
-	tellerName, _ := witticism.NewTellerName("tellerName")
-	sentence, _ := witticism.NewSentence("sentence")
 	ownerId := user.UserId("ownerId")
-	witticism, _ := witticism.NewWitticism(tellerName, sentence, &ownerId)
+	witticism, _ := witticism.NewWitticism("tellerName", "sentence", &ownerId)
 
 	err := repository.Save(witticism)
 	assert.Nil(t, err)

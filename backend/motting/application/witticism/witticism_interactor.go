@@ -1,6 +1,7 @@
 package witticism
 
 import (
+	"github.com/MasatoTokuse/motting/motting/domain/user"
 	"github.com/MasatoTokuse/motting/motting/domain/witticism"
 )
 
@@ -13,7 +14,9 @@ func NewWitticismUsecaseInteractor(witticismRepository witticism.WitticismReposi
 }
 
 func (interractor *WitticismUsecaseInteractor) AddWitticism(command *AddWitticismCommand) error {
-	witticism, err := createWitticism(command)
+	ownerId := user.UserId(command.OwnerId)
+	witticism, err := witticism.NewWitticism(command.TellerName, command.Sentence, &ownerId)
+
 	if err != nil {
 		return err
 	}
