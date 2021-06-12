@@ -5,13 +5,15 @@ services:
       context: ./docker/golang
       dockerfile: Dockerfile
       args:
-        - VARIANT=1.15
+        - VARIANT=1.16
         - INSTALL_NODE=true
         - NODE_VERSION=lts/*
     container_name: motting-app
     ports: 
       - 3001:3001
       - 3002:3002
+    env_file:
+      - ./docker/golang/golang.env
     volumes:
       - ../:/go/src
     working_dir: /go/src

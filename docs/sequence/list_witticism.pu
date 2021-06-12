@@ -1,0 +1,12 @@
+@startuml list_witticism
+participant Browser as browser
+box "motting" #LightBlue
+participant mottingAPIServer as api
+participant mottingDataBase as apidb
+end box
+
+browser -> api: ListWitticismRequest
+api -> apidb:  ListWitticism
+apidb --> api: Result
+api --> browser:  ListWitticismResponse
+@enduml

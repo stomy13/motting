@@ -1,0 +1,27 @@
+@startuml notify_witticism
+participant Browser as browser
+box "motting" #LightBlue
+participant mottingAPIServer as api
+participant WebPushAPIServer as push
+participant mottingDataBase as apidb
+participant WebPushDataBase as pushdb
+participant WebPushBatch as batch
+end box
+participant GooglePushServer as google
+
+batch -> api: fetchUsers
+api -> apidb: selectUsers
+apidb --> api: users
+api --> batch: users
+batch -> api: fetchWitticisms
+api -> apidb: selectWitticisms
+apidb --> api: witticisms
+api --> batch: witticisms
+'push server に必要な情報を取得する (Endpoint, P256dh, Auth)
+batch -> pushdb: fetchSubscription
+pushdb --> batch: subscription
+'subscription・秘密鍵の署名・公開鍵をpush serverに送信する
+batch -> google: sendNotification
+google --> batch: result
+google -> browser: notify
+@enduml
